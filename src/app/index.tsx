@@ -1,98 +1,247 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Inter_600SemiBold } from "@expo-google-fonts/inter";
+import { LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy/400Regular";
+import { useFonts } from "@expo-google-fonts/inter";
+import { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  Text,
+  View,
+  FlatList,
+  Dimensions,
+  FlatList as FlatListType,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Shadow } from "react-native-shadow-2";
+import { router } from "expo-router";
+import SplashScreen from "@/components/Splash-Screen";
+import { Inter_400Regular } from "@expo-google-fonts/inter/400Regular";
+import { Inter_300Light } from "@expo-google-fonts/inter/300Light";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+const { width } = Dimensions.get("window");
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
+const image1 = require("../../assets/images/womanriding.jpeg");
+const image2 = require("../../assets/images/Manwithbox.jpeg");
+const image3 = require("../../assets/images/Happywoman.jpeg");
+
+export default function Index() {
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_300Light,
+    Inter_600SemiBold,
+    LuckiestGuy_400Regular,
+  });
+
+  const [isSplashVisible, setIsSplashVisible] = useState(true);
+  const images = [image1, image2, image3];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const flatListRef = useRef<FlatListType | null>(null);
+  const intervalRef = useRef<number | null>(null);
+
+  // Timer for 5-second Splash Screen
+  useEffect(() => {
+    const splashTimer = setTimeout(() => {
+      setIsSplashVisible(false);
+    }, 5000); // 5000 ms = 5 seconds
+
+    return () => clearTimeout(splashTimer);
+  }, []);
+
+  // Image Slider Interval
+  const goToNextSlide = () => {
+    const nextIndex = (currentIndex + 1) % images.length;
+    setCurrentIndex(nextIndex);
+
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({
+        index: nextIndex,
+        animated: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    // Only run slider timer once the splash screen is done
+    if (isSplashVisible) return;
+
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+
+    intervalRef.current = setInterval(() => {
+      goToNextSlide();
+    }, 4000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [currentIndex, isSplashVisible]);
+
+  if (!fontsLoaded || isSplashVisible) {
+    return <SplashScreen />;
   }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <SafeAreaView className="flex-1 items-center justify-center bg-[#070706]">
+      <View className="flex-1 items-center">
+        {/* Image Slider Container */}
+        <View className="h-4/5" style={{ width: width }}>
+          <FlatList
+            ref={flatListRef}
+            data={images}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            scrollEnabled={false}
+            onMomentumScrollEnd={(event) => {
+              const index = Math.round(
+                event.nativeEvent.contentOffset.x / width,
+              );
+              setCurrentIndex(index);
+            }}
+            renderItem={({ item }) => (
+              <View style={{ width: width, height: "100%" }}>
+                <Image
+                  source={item}
+                  style={{
+                    width: width,
+                    height: "100%",
+                    resizeMode: "cover",
+                  }}
+                />
+              </View>
+            )}
+            keyExtractor={(_, index) => index.toString()}
+            onScrollToIndexFailed={(info) => {
+              const wait = new Promise((resolve) => setTimeout(resolve, 500));
+              wait.then(() => {
+                if (flatListRef.current) {
+                  flatListRef.current.scrollToIndex({
+                    index: info.index,
+                    animated: true,
+                  });
+                }
+              });
+            }}
+          />
+        </View>
+
+        <View className="absolute left-10 flex-row items-center gap-2 justify-center mt-10">
+          {images.map((_, index) => (
+            <View
+              key={index}
+              className={`w-14 h-1 ${index === currentIndex ? "bg-[#DCA501]" : "bg-white"}`}
+            />
+          ))}
+        </View>
+
+        <View className="absolute bottom-20 items-center justify-center w-full">
+          <Shadow
+            distance={100}
+            startColor="#0e0e0e"
+            offset={[0, 4]}
+            containerStyle={{
+              marginBottom: -230,
+            }}
+            style={{
+              borderRadius: 225,
+              width: 500,
+              height: 450,
+            }}
+          >
+            <View className="w-[500px] h-[450px] pl-20 rounded-[225px] bg-[#0e0e0e]">
+              <View className="-mt-2 -ml-2">
+                <Text
+                  className="text-white text-lg"
+                  style={{ fontFamily: "Inter_400Regular" }}
+                >
+                  FAST
+                </Text>
+                <Text
+                  className="text-white text-xs"
+                  style={{ fontFamily: "Inter_300Light" }}
+                >
+                  Fast delivery to your door step
+                </Text>
+                <Text
+                  className="text-white text-xs"
+                  style={{ fontFamily: "Inter_300Light" }}
+                >
+                  We deliver straight to your door — no missed packages, no
+                  hassle.
+                </Text>
+                <Text
+                  className="text-white text-xs"
+                  style={{ fontFamily: "Inter_300Light" }}
+                >
+                  Speedy delivery. Right to you.
+                </Text>
+              </View>
+              <View>
+                <Pressable
+                 onPress={() => router.push("/(auth)")}
+                  className="bg-[#DCA501] -ml-2 w-[85%] h-10 items-center justify-center rounded-lg mt-10"
+                >
+                  <Text
+                    className="text-white text-xs"
+                    style={{ fontFamily: "Inter_600SemiBold", fontSize: 12 }}
+                  >
+                    I already have an account
+                  </Text>
+                </Pressable>
+                <Pressable
+                  onPress={() => {
+                    router.push("/(auth)/register");
+                  }}
+                  className="bg-[#FFFFFF] -ml-2 w-[85%] h-10 items-center justify-center rounded-lg mt-5"
+                >
+                  <Text
+                    className="text-black text-xs"
+                    style={{ fontFamily: "Inter_600SemiBold", fontSize: 12 }}
+                  >
+                    Create a new Account
+                  </Text>
+                </Pressable>
+              </View>
+              <View className="flex-row gap-3 mt-24 justify-center items-center -ml-20">
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  className="text-white"
+                >
+                  policies
+                </Text>
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  className="text-white"
+                >
+                  Supports
+                </Text>
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  className="text-white"
+                >
+                  Help center
+                </Text>
+              </View>
+              <Pressable className="absolute top-56 z-50 right-24">
+                <Text
+                  className="text-white"
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                >
+                  Forget password?
+                </Text>
+              </Pressable>
+            </View>
+          </Shadow>
+        </View>
+        <View
+          className={`absolute left-0 h-40 w-40 ${currentIndex == 0 ? "bg-[#DCA501]" : currentIndex == 1 ? "bg-[#F01B1B]" : "bg-[#9EE8E8]"} -rotate-12 -mb-16 -ml-8 rounded-[40px] bottom-0`}
+        />
+      </View>
+    </SafeAreaView>
   );
 }
-
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
-});
