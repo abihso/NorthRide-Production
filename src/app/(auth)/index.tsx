@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Input } from "@rneui/themed";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import axios from "axios"
+import { router } from "expo-router";
 const activeShadowStyle = {
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
@@ -41,7 +42,6 @@ const Login = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10,15}$/;
 
-    // Email / Phone Validation
     if (activeTab === "email") {
       if (!data.emailOrPhone) {
         newErrors.emailOrPhone = "Email is required";
@@ -60,7 +60,6 @@ const Login = () => {
       }
     }
 
-    // Password Validation
     if (!data.password) {
       newErrors.password = "Password is required";
       hasError = true;
@@ -72,7 +71,25 @@ const Login = () => {
     setErrors(newErrors);
 
     if (!hasError) {
-      // Execute sign-in request
+      axios
+      .post(
+        "http://192.168.43.115:4000/api/login",
+
+        {
+          email :activeTab === "email"
+              ? data.emailOrPhone.trim().toLowerCase()
+              : data.emailOrPhone.trim(),
+          password : data.password
+        },
+        { withCredentials: true }
+      )
+      .then((res) => {
+       console.log(res)
+       router.push("/(dashboard)")
+      })
+      .catch((err) => {
+       console.log(err)
+      })
     }
   };
 
