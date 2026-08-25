@@ -18,7 +18,7 @@ import {
 } from "react-native";
 import MapView, { Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-const GOOGLE_PLACES_API_KEY = "AIzaSyA-snrIEiM4BNj7NmkqsC9ifvr_dbyKxyA";
+const GOOGLE_PLACES_API_KEY = "";
 interface LocationData {
   latitude: number;
   longitude: number;
