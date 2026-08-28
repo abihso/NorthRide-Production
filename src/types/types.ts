@@ -3,3 +3,8 @@ export interface LocationData {
   longitude: number;
   address: string;
 }
+
+export interface PaymentOption {
+  label: string;
+  value: string;
+}

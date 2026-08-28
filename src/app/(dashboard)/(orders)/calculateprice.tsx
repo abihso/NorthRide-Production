@@ -16,18 +16,10 @@ import {
 import { Iconify } from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { greenMapStyle } from "@/utils";
+import type { LocationData } from "@/types/types";
+import type { PaymentOption } from "@/types/types";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
-
-interface LocationData {
-  latitude: number;
-  longitude: number;
-  address: string;
-}
-
-interface PaymentOption {
-  label: string;
-  value: string;
-}
 
 const PAYMENT_OPTIONS: PaymentOption[] = [
   { label: "Cash Payment", value: "cash" },
@@ -158,6 +150,7 @@ const CalculatePrice = () => {
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
             }}
+            customMapStyle={greenMapStyle}
           >
             {/* Pickup Marker */}
             <Marker

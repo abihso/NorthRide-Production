@@ -34,3 +34,20 @@
     }
     return points;
   };
+
+  export  const greenMapStyle = [
+    {
+      elementType: "geometry",
+      stylers: [{ color: "#58dc95" }],
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#527fb2" }],
+    },
+    {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#ffffff" }],
+    },
+  ];

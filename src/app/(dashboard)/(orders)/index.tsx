@@ -19,7 +19,7 @@ import {
 import { Iconify } from "react-native-iconify/native";
 import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { greenMapStyle } from "@/utils";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 interface LocationData {
@@ -394,10 +394,10 @@ const Drop_n_Pickoff = () => {
         "dropoffLocation",
         JSON.stringify(dropoffLocation),
       );
-      console.log({
-        pickuplocation: pickupLocation,
-        dropofflocation: dropoffLocation,
-      });
+      // console.log({
+      //   pickuplocation: pickupLocation,
+      //   dropofflocation: dropoffLocation,
+      // });
       router.push("/(dashboard)/(orders)/calculateprice");
     } catch (error) {
       console.error("Failed to save locations to storage:", error);
@@ -670,6 +670,7 @@ const Drop_n_Pickoff = () => {
                 latitudeDelta: 0.015,
                 longitudeDelta: 0.015,
               }}
+              customMapStyle={greenMapStyle}
               onRegionChangeComplete={handleRegionChangeComplete}
             />
             <View className="absolute top-1/2 left-1/2 -ml-4 -mt-8 pointer-events-none items-center justify-center z-10">

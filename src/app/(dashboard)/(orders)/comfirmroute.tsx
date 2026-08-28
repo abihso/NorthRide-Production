@@ -1,5 +1,5 @@
 import type { LocationData } from "@/types/types";
-import { decodePolyline } from "@/utils";
+import { decodePolyline, greenMapStyle } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Image, Text, View } from "react-native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 // interface LocationData {
@@ -23,7 +24,7 @@ const ConfirmRoute = () => {
   const [routeCoordinates, setRouteCoordinates] = useState<
     { latitude: number; longitude: number }[]
   >([]);
-
+  const [modal, setModal] = useState(false);
   const [durationMin, setDurationMin] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<string>("0.00");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -31,9 +32,15 @@ const ConfirmRoute = () => {
   const handleSubmit = async () => {
     if (calculatedPrice != "0.00") {
       await AsyncStorage.setItem("price", calculatedPrice);
-      return router.push("/(dashboard)/(orders)/lookingforrider");
+      setModal(true);
+      // return router.push("/(dashboard)/(orders)/lookingforrider");
     }
   };
+  const payOnDelivery = () => {
+    Alert.alert("message", "hi");
+    return router.push("/(dashboard)/(orders)/lookingforrider");
+  };
+  const payRightNow = () => {};
 
   useEffect(() => {
     const loadRouteData = async () => {
@@ -126,6 +133,7 @@ const ConfirmRoute = () => {
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
             }}
+            customMapStyle={greenMapStyle}
           >
             {/* Pickup Marker */}
             <Marker
@@ -165,7 +173,6 @@ const ConfirmRoute = () => {
         )}
       </View>
 
-      {/* OVERLAY SHEET */}
       <View className="bg-light-gray1 h-full -mt-20 rounded-t-3xl p-10">
         <View className="flex-row justify-between items-center">
           <View className="flex-row items-center gap-3">
@@ -225,10 +232,138 @@ const ConfirmRoute = () => {
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
-            Confirm pickup
+            Confirm route
           </Text>
         </Button>
       </View>
+      {modal && (
+        <View className="absolute inset-0 z-50 bg-black/90 flex-col justify-center items-center">
+          <View className="w-5/6 h-4/6 bg-light-gray1 rounded-3xl p-5">
+            <View
+              className="h-3/5 rounded-3xl overflow-hidden"
+              style={{
+                backgroundColor: "#ffffff",
+                // iOS Shadow
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.15,
+                shadowRadius: 8,
+                // Android Shadow
+                elevation: 6,
+                // Keep zIndex high so the shadow floats above elements below it
+                zIndex: 10,
+              }}
+            >
+              {pickup && dropoff ? (
+                <MapView
+                  ref={mapRef}
+                  provider={PROVIDER_GOOGLE}
+                  style={{ flex: 1 }}
+                  initialRegion={{
+                    latitude: pickup.latitude,
+                    longitude: pickup.longitude,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
+                  }}
+                  customMapStyle={greenMapStyle}
+                >
+                  {/* Pickup Marker */}
+                  <Marker
+                    coordinate={{
+                      latitude: pickup.latitude,
+                      longitude: pickup.longitude,
+                    }}
+                    title="Pickup"
+                    description={pickup.address}
+                    pinColor="green"
+                  />
+
+                  {/* Dropoff Marker */}
+                  <Marker
+                    coordinate={{
+                      latitude: dropoff.latitude,
+                      longitude: dropoff.longitude,
+                    }}
+                    title="Dropoff"
+                    description={dropoff.address}
+                    pinColor="red"
+                  />
+
+                  {/* Route Polyline */}
+                  {routeCoordinates.length > 0 && (
+                    <Polyline
+                      coordinates={routeCoordinates}
+                      strokeWidth={5}
+                      strokeColor="#208AEF"
+                    />
+                  )}
+                </MapView>
+              ) : (
+                <View className="flex-1 justify-center items-center bg-white">
+                  <ActivityIndicator size="large" color="#FDBF07" />
+                </View>
+              )}
+            </View>
+
+            <Button
+              onPress={payOnDelivery}
+              radius={"xl"}
+              buttonStyle={{
+                backgroundColor: "#f1f1f1",
+              }}
+              containerStyle={{
+                borderRadius: 30,
+                backgroundColor: "#f1f1f1",
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.15,
+                shadowRadius: 8,
+                elevation: 4,
+                marginTop: 40,
+                height: 50,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                className="text-xl text-black"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                numberOfLines={1}
+              >
+                Pay on delivery
+              </Text>
+            </Button>
+            <Button
+              radius={"xl"}
+              onPress={payRightNow}
+              buttonStyle={{
+                backgroundColor: "black",
+              }}
+              containerStyle={{
+                borderRadius: 30,
+                backgroundColor: "black",
+                shadowColor: "#000000",
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.15,
+                shadowRadius: 8,
+                elevation: 4,
+                marginTop: 20,
+                height: 50,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                className="text-xl text-white"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                numberOfLines={1}
+              >
+                Pay right away
+              </Text>
+            </Button>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

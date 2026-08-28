@@ -14,6 +14,7 @@ import {
 import Iconify from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { greenMapStyle } from "@/utils";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 const LookingForRiderRoute = () => {
@@ -127,6 +128,7 @@ const LookingForRiderRoute = () => {
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
             }}
+            // customMapStyle={greenMapStyle}
           >
             {/* Pickup Marker */}
             <Marker
