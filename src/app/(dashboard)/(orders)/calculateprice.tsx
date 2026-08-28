@@ -1,5 +1,5 @@
+import { decodePolyline } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Picker } from "@react-native-picker/picker";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -7,6 +7,8 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Modal,
+  Pressable,
   ScrollView,
   Text,
   View,
@@ -14,7 +16,6 @@ import {
 import { Iconify } from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 interface LocationData {
@@ -22,6 +23,17 @@ interface LocationData {
   longitude: number;
   address: string;
 }
+
+interface PaymentOption {
+  label: string;
+  value: string;
+}
+
+const PAYMENT_OPTIONS: PaymentOption[] = [
+  { label: "Cash Payment", value: "cash" },
+  { label: "Mobile Money (MTN / Telecel)", value: "momo" },
+  { label: "Credit / Debit Card", value: "card" },
+];
 
 const CalculatePrice = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -39,43 +51,10 @@ const CalculatePrice = () => {
 
   // Payment Selection
   const [paymentMethod, setPaymentMethod] = useState<string>("cash");
+  const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
-  // Polyline decoder helper
-  const decodePolyline = (encoded: string) => {
-    let points = [];
-    let index = 0,
-      len = encoded.length;
-    let lat = 0,
-      lng = 0;
-
-    while (index < len) {
-      let b,
-        shift = 0,
-        result = 0;
-      do {
-        b = encoded.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      let dlat = result & 1 ? ~(result >> 1) : result >> 1;
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-      do {
-        b = encoded.charCodeAt(index++) - 63;
-        result |= (b & 0x1f) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-      let dlng = result & 1 ? ~(result >> 1) : result >> 1;
-      lng += dlng;
-
-      points.push({
-        latitude: lat / 1e5,
-        longitude: lng / 1e5,
-      });
-    }
-    return points;
+  const handleSubmit = async () => {
+      return router.push("/(dashboard)/(orders)/comfirmroute");
   };
 
   // Fetch saved locations & calculate route
@@ -159,6 +138,10 @@ const CalculatePrice = () => {
 
     loadRouteData();
   }, []);
+
+  const selectedPaymentLabel =
+    PAYMENT_OPTIONS.find((item) => item.value === paymentMethod)?.label ||
+    "Select payment method";
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -313,21 +296,58 @@ const CalculatePrice = () => {
             </Text>
           </View>
 
-          {/* PAYMENT METHOD DROPDOWN */}
-          <View className="bg-white rounded-2xl border border-gray-200 mt-4 overflow-hidden">
-            <Picker
-              selectedValue={paymentMethod}
-              onValueChange={(itemValue) => setPaymentMethod(itemValue)}
-              dropdownIconColor="black"
+          {/* PAYMENT METHOD SELECTOR */}
+          <Pressable
+            onPress={() => setIsPickerVisible(true)}
+            className="bg-white rounded-2xl border border-gray-200 mt-4 px-4 py-3 flex-row justify-between items-center"
+          >
+            <Text
+              className="text-sm text-black"
+              style={{ fontFamily: "Inter_600SemiBold" }}
             >
-              <Picker.Item label="Cash Payment" value="cash" />
-              <Picker.Item label="Mobile Money (MTN / Telecel)" value="momo" />
-              <Picker.Item label="Credit / Debit Card" value="card" />
-            </Picker>
-          </View>
+              {selectedPaymentLabel}
+            </Text>
+            <Text className="text-xs text-black">▼</Text>
+          </Pressable>
+
+          {/* PAYMENT METHOD DROPDOWN MODAL */}
+          <Modal visible={isPickerVisible} transparent animationType="fade">
+            <Pressable
+              className="flex-1 bg-black/40 justify-center px-6"
+              onPress={() => setIsPickerVisible(false)}
+            >
+              <View className="bg-white rounded-2xl p-2 shadow-lg">
+                {PAYMENT_OPTIONS.map((item) => (
+                  <Pressable
+                    key={item.value}
+                    onPress={() => {
+                      setPaymentMethod(item.value);
+                      setIsPickerVisible(false);
+                    }}
+                    className="p-4 border-b border-gray-100 last:border-b-0 flex-row justify-between items-center"
+                  >
+                    <Text
+                      className="text-sm text-black"
+                      style={{ fontFamily: "Inter_600SemiBold" }}
+                    >
+                      {item.label}
+                    </Text>
+                    {paymentMethod === item.value && (
+                      <Text
+                        className="text-sm text-black"
+                        style={{ fontFamily: "Inter_600SemiBold" }}
+                      >
+                        ✓
+                      </Text>
+                    )}
+                  </Pressable>
+                ))}
+              </View>
+            </Pressable>
+          </Modal>
 
           <Button
-            onPress={() => router.push("/(dashboard)/(orders)/comfirmroute")}
+            onPress={handleSubmit}
             radius={"xl"}
             buttonStyle={{
               backgroundColor: "black",

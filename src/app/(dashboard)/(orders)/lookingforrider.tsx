@@ -1,21 +1,22 @@
 import type { LocationData } from "@/types/types";
 import { decodePolyline } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Button } from "@rneui/base";
-import { router } from "expo-router";
+import { LinearProgress } from "@rneui/themed";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
+import Iconify from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
-// interface LocationData {
-//   latitude: number;
-//   longitude: number;
-//   address: string;
-// }
-
-const ConfirmRoute = () => {
+const LookingForRiderRoute = () => {
   const mapRef = useRef<MapView | null>(null);
 
   const [pickup, setPickup] = useState<LocationData | null>(null);
@@ -23,16 +24,16 @@ const ConfirmRoute = () => {
   const [routeCoordinates, setRouteCoordinates] = useState<
     { latitude: number; longitude: number }[]
   >([]);
+  const [modal, setModal] = useState(false);
 
   const [durationMin, setDurationMin] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<string>("0.00");
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  const handleSubmit = async () => {
-    if (calculatedPrice != "0.00") {
-      await AsyncStorage.setItem("price", calculatedPrice);
-      return router.push("/(dashboard)/(orders)/lookingforrider");
-    }
+  const handleCancel = () => {
+    Alert.alert("message", "Canceled");
+    setTimeout(() => {
+      setModal(false);
+    }, 2000);
   };
 
   useEffect(() => {
@@ -167,70 +168,113 @@ const ConfirmRoute = () => {
 
       {/* OVERLAY SHEET */}
       <View className="bg-light-gray1 h-full -mt-20 rounded-t-3xl p-10">
-        <View className="flex-row justify-between items-center">
-          <View className="flex-row items-center gap-3">
-            <Image
-              source={require("@/assets/images/scotter_no_bg.png")}
-              className="h-16 w-16"
-            />
-            <View>
-              <Text
-                className="text-base"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                {dropoff?.address
-                  ? dropoff.address.split(",")[0]
-                  : "Destination"}
-              </Text>
-              <Text
-                className="text-[10px]"
-                style={{ fontFamily: "Inter_300Light" }}
-                numberOfLines={1}
-              >
-                Motorcycle Ride
-              </Text>
-            </View>
-          </View>
-
-          <View className="items-end">
+        <View className="flex-row justify-between">
+          <View>
+            <Text
+              className="text-base"
+              style={{ fontFamily: "Inter_600SemiBold" }}
+            >
+              Looking for rider
+            </Text>
             <Text
               className="text-[10px]"
               style={{ fontFamily: "Inter_300Light" }}
-              numberOfLines={1}
             >
-              {durationMin ? `${durationMin} min ride` : "Calculating..."}
+              Connecting to riders nearby
             </Text>
+          </View>
+          <View className=" justify-end">
             <Text
               className="text-sm"
               style={{ fontFamily: "Inter_600SemiBold" }}
-              numberOfLines={1}
             >
               GH₵ {calculatedPrice}
             </Text>
           </View>
         </View>
-
-        <Button
-          radius={"xl"}
-          buttonStyle={{
-            backgroundColor: "black",
-            marginTop: 25,
-            height: 50,
-          }}
-          onPress={handleSubmit}
-        >
-          <Text
-            className="text-xl text-light-pink"
-            style={{ fontFamily: "Inter_600SemiBold" }}
-            numberOfLines={1}
-          >
-            Confirm pickup
-          </Text>
-        </Button>
+        <LinearProgress color="#0DC055" className="my-5" />
+        <View className="flex-row justify-center items-center my-5 gap-20">
+          {/* <Pressable>
+            <Iconify icon="weui:location-outlined" size={30} color={"black"} />
+          </Pressable> */}
+          <Pressable className=" flex-col items-center gap-1 " >
+            <View className=" p-3 rounded-full bg-light-gray2 " >
+             <Iconify icon="weui:location-outlined" size={30} color={"black"} />
+            </View>
+             <Text
+              className="text-sm"
+              style={{ fontFamily: "Inter_300Light" }}
+            >
+            Edit pickup
+            </Text>
+          </Pressable>
+          <Pressable onPress={() => setModal(true)} className=" flex-col items-center gap-1 " >
+            <View className=" p-3 rounded-full bg-light-gray2 " >
+              <Iconify icon="mdi:car-off" size={30} color={"black"} />
+            </View>
+             <Text
+              className="text-sm"
+              style={{ fontFamily: "Inter_300Light" }}
+            >
+             Cancel ride
+            </Text>
+          </Pressable>
+        </View>
       </View>
+      {modal && (
+        <View className="absolute inset-0 z-50 bg-black/40 flex-col justify-end">
+          <View className="bg-light-gray1 h-3/6 rounded-t-3xl p-10">
+            <View className="flex-col justify-center items-center my-5 ">
+              <View className="h-44 flex-row justify-center items-center w-full">
+                <Image
+                  source={require("@/assets/images/motor-cancel.png")}
+                  className="h-32 w-32"
+                />
+                <View className="absolute bottom-5 right-28">
+                  <Iconify icon="mdi:car-off" size={30} color={"black"} />
+                </View>
+              </View>
+              <Text
+                className="text-base"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+              >
+                Are you sure to cancel the ride?
+              </Text>
+              <Text
+                className="text-[10px]"
+                style={{ fontFamily: "Inter_300Light" }}
+              >
+                If you cancel this, you may wait a while before you get the next
+                available ride.
+              </Text>
+              <Pressable
+                onPress={() => handleCancel()}
+                className="bg-red-500 w-full py-3 items-center rounded-3xl mt-10"
+              >
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  className="text-white text-xl"
+                >
+                  Cancel pick-up
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => setModal(false)}
+                className="bg-[#D8D8D8] w-full py-3 items-center rounded-3xl mt-3"
+              >
+                <Text
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  className=" text-xl"
+                >
+                  Wait for rider/courier
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
 
-export default ConfirmRoute;
+export default LookingForRiderRoute;

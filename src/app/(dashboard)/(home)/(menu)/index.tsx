@@ -53,7 +53,14 @@ const Menu = () => {
         >
           Ride
         </Text>
-        <Pressable onPress={() => router.push("/(dashboard)/(orders)")} >
+        <Pressable
+          onPress={() =>
+            router.push({
+              pathname: "/(dashboard)/(orders)",
+              params: { screenName: "ride" },
+            })
+          }
+        >
           <View className="h-28 bg-light-gray1 rounded-3xl mt-4 flex-row items-center gap-4 p-5">
             <View className=" w-20 h-20 bg-light-gray2 rounded-xl flex-row items-center justify-center">
               <Image
@@ -86,57 +93,75 @@ const Menu = () => {
         >
           Delivery
         </Text>
+
         <View className="min-h-48 bg-light-gray1 rounded-3xl mt-4 py-3">
-          <View className="h-28 bg-light-gray1 rounded-3xl flex-row items-center gap-4 p-5">
-            <View className=" w-20 h-20 bg-light-gray2 rounded-xl flex-row items-center justify-center">
-              <Image
-                className="w-16 h-16"
-                source={require("@/assets/images/maninfrontofwomandoor.png")}
-              />
+          <Pressable
+            onPress={() =>
+              router.push({
+                pathname: "/(dashboard)/(orders)",
+                params: { screenName: "send" },
+              })
+            }
+          >
+            <View className="h-28 bg-light-gray1 rounded-3xl flex-row items-center gap-4 p-5">
+              <View className=" w-20 h-20 bg-light-gray2 rounded-xl flex-row items-center justify-center">
+                <Image
+                  className="w-16 h-16"
+                  source={require("@/assets/images/maninfrontofwomandoor.png")}
+                />
+              </View>
+              <View>
+                <Text
+                  className="text-2xl "
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Send
+                </Text>
+                <Text
+                  className="text-xs text-light-black1"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Do you want to send an item?
+                </Text>
+              </View>
             </View>
-            <View>
-              <Text
-                className="text-2xl "
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Send
-              </Text>
-              <Text
-                className="text-xs text-light-black1"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Do you want to send an item?
-              </Text>
-            </View>
-          </View>
+          </Pressable>
           <View className="border-b border-light-gray3 w-[80%] self-end mr-3" />
-          <View className="h-28 bg-light-gray1 rounded-3xl flex-row items-center gap-4 p-5">
-            <View className=" w-20 h-20 bg-light-gray2 rounded-xl flex-row items-center justify-center">
-              <Image
-                className="w-16 h-16"
-                source={require("@/assets/images/deliverying.png")}
-              />
+          <Pressable  onPress={() =>
+            router.push({
+              pathname: "/(dashboard)/(orders)",
+              params: { screenName: "receive" },
+            })
+          }>
+            <View className="h-28 bg-light-gray1 rounded-3xl flex-row items-center gap-4 p-5">
+              <View className=" w-20 h-20 bg-light-gray2 rounded-xl flex-row items-center justify-center">
+                <Image
+                  className="w-16 h-16"
+                  source={require("@/assets/images/deliverying.png")}
+                />
+              </View>
+              <View>
+                <Text
+                  className="text-2xl "
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Receive
+                </Text>
+                <Text
+                  className="text-xs text-light-black1"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Do you want to receive an item
+                </Text>
+              </View>
             </View>
-            <View>
-              <Text
-                className="text-2xl "
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Receive
-              </Text>
-              <Text
-                className="text-xs text-light-black1"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Do you want to receive an item
-              </Text>
-            </View>
-          </View>
+          </Pressable>
         </View>
+
         <Text
           className="text-2xl mt-5"
           style={{ fontFamily: "Inter_600SemiBold" }}

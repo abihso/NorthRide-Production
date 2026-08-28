@@ -1,17 +1,20 @@
+import Canceled from "@/screens/canceled";
+import Past from "@/screens/past";
+import Upcoming from "@/screens/upcoming";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SearchBar } from "@rneui/themed";
 import * as Location from "expo-location";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Modal,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
 } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
@@ -71,7 +74,7 @@ const LocationSuggestionsList = ({
 
 const Drop_n_Pickoff = () => {
   const mapRef = useRef<MapView | null>(null);
-
+  const { screenName } = useLocalSearchParams<{ screenName: string }>();
   // Screen Tabs
   const [screen, setScreen] = useState("book");
 
@@ -136,7 +139,6 @@ const Drop_n_Pickoff = () => {
     return `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`;
   };
 
-  // Google Places Autocomplete API Request
   const fetchGooglePlacesAutocomplete = async (
     input: string,
     target: "pickup" | "dropoff",
@@ -393,10 +395,10 @@ const Drop_n_Pickoff = () => {
         JSON.stringify(dropoffLocation),
       );
       console.log({
-        pickuplocation : pickupLocation,
-        dropofflocation: dropoffLocation
-      })
-    router.push("/(dashboard)/(orders)/calculateprice")
+        pickuplocation: pickupLocation,
+        dropofflocation: dropoffLocation,
+      });
+      router.push("/(dashboard)/(orders)/calculateprice");
     } catch (error) {
       console.error("Failed to save locations to storage:", error);
     }
@@ -415,7 +417,13 @@ const Drop_n_Pickoff = () => {
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
-            Rides
+            {screenName == "ride"
+              ? "Rides"
+              : screenName == "send"
+                ? "Send"
+                : screenName == "receive"
+                  ? "Receive"
+                  : null}
           </Text>
         </View>
 
@@ -507,11 +515,7 @@ const Drop_n_Pickoff = () => {
               onPress={() => openMapPicker("pickup")}
               className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
             >
-              <Iconify
-                icon="fa-solid:location-arrow"
-                size={18}
-                color={"black"}
-              />
+              <Iconify icon="mingcute:map-pin-fill" size={18} color={"black"} />
               <Text
                 className="text-sm"
                 style={{ fontFamily: "Inter_600SemiBold" }}
@@ -598,11 +602,7 @@ const Drop_n_Pickoff = () => {
               onPress={() => openMapPicker("dropoff")}
               className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
             >
-              <Iconify
-                icon="fa-solid:location-arrow"
-                size={18}
-                color={"black"}
-              />
+              <Iconify icon="mingcute:map-pin-fill" size={18} color={"black"} />
               <Text
                 className="text-sm"
                 style={{ fontFamily: "Inter_600SemiBold" }}
@@ -626,6 +626,12 @@ const Drop_n_Pickoff = () => {
             </Text>
           </Pressable>
         </ScrollView>
+      ) : screen === "past" ? (
+        <Past />
+      ) : screen === "canceled" ? (
+        <Canceled />
+      ) : screen === "upcoming" ? (
+        <Upcoming />
       ) : (
         <View className="flex-1 justify-center items-center">
           <Text style={{ fontFamily: "Inter_600SemiBold" }}>

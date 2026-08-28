@@ -39,9 +39,11 @@ module.exports = function (api) {
             'fa-solid:location-arrow',
             'mingcute:map-pin-fill',
             'boxicons:swap-vertical',
+            'mdi:car-off',
+            'mdi:motorbike-off',
           ],
         },
       ],
     ],
   };
-};
+};                 
