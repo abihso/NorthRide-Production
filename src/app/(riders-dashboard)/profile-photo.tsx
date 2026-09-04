@@ -31,9 +31,15 @@ const ProfilePhoto = () => {
         recorded. Please note that once you submit your profile photo it can
         only be changed in limited circumstances.
       </Text>
-      <View>
-        <Text>
+      <View className="mt-2">
+        <Text className="text-xs">
           1. Face the camera directly with your eyes and mouth clearly visible
+        </Text>
+        <Text className="text-xs">
+          2. Make sure the photo is well lit, free of glare, and in focus
+        </Text>
+        <Text className="text-xs">
+          3. No photos of a photo, filters, or alterations
         </Text>
       </View>
       <View className=" flex mt-2 justify-center items-center">
@@ -42,6 +48,16 @@ const ProfilePhoto = () => {
           Upload Photo
         </Text>
       </View>
+
+      <Text style={{ fontFamily: "Inter_400Regular" }} className="text-xs mt-5">
+        By taking your profile photo, you agree that NorthRide and our service
+        providers may use facial recognition technology to verify your identity
+        by comparing your profile photo to the photo on your ID document. This
+        involves processing your personal information, which may include
+        biometric data, as set out in the service provider’s respective privacy
+        notice . NorthRide may also use your profile photo to check for
+        duplication across other accounts. Learn More
+      </Text>
 
       {/* Bottom Sticky Action Button */}
       <View className="px-6 absolute left-0 right-0 bottom-10">
