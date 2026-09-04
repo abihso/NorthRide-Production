@@ -11,8 +11,10 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button, Input } from "@rneui/themed";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import axios from "axios"
+import axios from "axios";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const activeShadowStyle = {
   shadowColor: "#000",
   shadowOffset: { width: 0, height: 2 },
@@ -21,8 +23,11 @@ const activeShadowStyle = {
   elevation: 5,
 };
 
+const url = process.env.EXPO_PUBLIC_BACKEND_URL;
+const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
+
 const Login = () => {
-  const [activeTab, setActiveTab] = useState("email"); // "email" or "phone"
+  const [activeTab, setActiveTab] = useState("email");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -72,24 +77,40 @@ const Login = () => {
 
     if (!hasError) {
       axios
-      .post(
-        "http://192.168.43.115:4000/api/login",
-
-        {
-          email :activeTab === "email"
-              ? data.emailOrPhone.trim().toLowerCase()
-              : data.emailOrPhone.trim(),
-          password : data.password
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-       console.log(res)
-       router.push("/(dashboard)")
-      })
-      .catch((err) => {
-       console.log(err)
-      })
+        .post(
+          `${DEV ? "http://192.168.43.115:4000" : url}/api/login`,
+          {
+            email:
+              activeTab === "email"
+                ? data.emailOrPhone.trim().toLowerCase()
+                : data.emailOrPhone.trim(),
+            password: data.password,
+          },
+          { withCredentials: true },
+        )
+        .then(async (res) => {
+          await AsyncStorage.setItem(
+            "userId",
+            JSON.stringify(res.data.user.userId),
+          );
+          await AsyncStorage.setItem(
+            "number",
+            JSON.stringify(res.data.user.phoneNumber),
+          );
+          await AsyncStorage.setItem(
+            "fullname",
+            JSON.stringify(res.data.user.fullName),
+          );
+          console.log(res.data.user.userType);
+          if (res.data.user.userType == "rider") {
+            router.push("/(riders-dashboard)");
+          } else if (res.data.user.userType == "customer") {
+            router.push("/(dashboard)");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -109,7 +130,8 @@ const Login = () => {
   return (
     <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
         className="flex-1"
       >
         <ScrollView
@@ -119,6 +141,8 @@ const Login = () => {
             justifyContent: "space-between",
           }}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets={true}
         >
           <View>
             {/* Tab Switcher Header */}
@@ -176,7 +200,8 @@ const Login = () => {
                 className="text-[#01032D] mt-4 shadow-slate-400"
                 style={{ fontFamily: "Inter_400Regular" }}
               >
-                Enter your {activeTab === "email" ? "email" : "phone number"} and
+                Enter your {activeTab === "email" ? "email" : "phone number"}{" "}
+                and
               </Text>
               <Text
                 className="text-[#01032D] shadow-slate-400 mb-4"

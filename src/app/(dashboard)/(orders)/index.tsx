@@ -1,6 +1,7 @@
 import Canceled from "@/screens/canceled";
 import Past from "@/screens/past";
 import Upcoming from "@/screens/upcoming";
+import { greenMapStyle } from "@/utils";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SearchBar } from "@rneui/themed";
@@ -19,7 +20,6 @@ import {
 import { Iconify } from "react-native-iconify/native";
 import MapView, { PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { greenMapStyle } from "@/utils";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 interface LocationData {
@@ -77,7 +77,7 @@ const Drop_n_Pickoff = () => {
   const { screenName } = useLocalSearchParams<{ screenName: string }>();
   // Screen Tabs
   const [screen, setScreen] = useState("book");
-
+  const [userId, setUserId] = useState<string | null>(null);
   // Selected Locations
   const [pickupLocation, setPickupLocation] = useState<LocationData | null>(
     null,
@@ -189,6 +189,11 @@ const Drop_n_Pickoff = () => {
       }
     }
   };
+  useEffect(() => {
+    (async () => {
+      setUserId(await AsyncStorage.getItem("userId"));
+    })();
+  }, []);
 
   // Fetch initial location on load
   useEffect(() => {
@@ -394,22 +399,26 @@ const Drop_n_Pickoff = () => {
         "dropoffLocation",
         JSON.stringify(dropoffLocation),
       );
-      // console.log({
-      //   pickuplocation: pickupLocation,
-      //   dropofflocation: dropoffLocation,
-      // });
-      router.push("/(dashboard)/(orders)/calculateprice");
+
+      router.push({
+        pathname: "/(dashboard)/(orders)/calculateprice",
+        params: {
+          screenName,
+        },
+      });
     } catch (error) {
       console.error("Failed to save locations to storage:", error);
     }
   };
-
   return (
     <SafeAreaView className="flex-1 bg-white">
       {/* Top Header */}
       <View className="h-24 bg-[#F7F7F7] px-5 pt-3">
         <View className="flex-row items-center gap-3">
-          <Pressable className="p-1">
+          <Pressable
+            onPress={() => router.push("/(dashboard)/(home)/(menu)")}
+            className="p-1"
+          >
             <FontAwesome name="close" size={20} />
           </Pressable>
           <Text
@@ -627,9 +636,9 @@ const Drop_n_Pickoff = () => {
           </Pressable>
         </ScrollView>
       ) : screen === "past" ? (
-        <Past />
+        <Past userId={userId} status={"delivered"} category={screenName} />
       ) : screen === "canceled" ? (
-        <Canceled />
+        <Canceled userId={userId} status={"cancelled"} category={screenName} />
       ) : screen === "upcoming" ? (
         <Upcoming />
       ) : (

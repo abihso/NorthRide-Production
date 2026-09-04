@@ -21,7 +21,9 @@
       "package": "com.anonymous.NorthRide",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
+        "ACCESS_FINE_LOCATION",
+        "READ_CONTACTS",
+        "WRITE_CONTACTS"
       ],
       "config": {
         "googleMaps": {
@@ -43,7 +45,13 @@
           "imageWidth": 76
         }
       ],
-      "@react-native-vector-icons/material-icons"
+      "@react-native-vector-icons/material-icons",
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow NorthRide to access your contacts to easily fill receiver details."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

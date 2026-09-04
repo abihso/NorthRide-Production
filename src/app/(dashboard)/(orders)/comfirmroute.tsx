@@ -2,23 +2,33 @@ import type { LocationData } from "@/types/types";
 import { decodePolyline, greenMapStyle } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "@rneui/base";
-import { router } from "expo-router";
+import axios from "axios";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Image, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { WebView, WebViewNavigation } from "react-native-webview";
 
+const url = process.env.EXPO_PUBLIC_BACKEND_URL;
+const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
-// interface LocationData {
-//   latitude: number;
-//   longitude: number;
-//   address: string;
-// }
+const CALLBACK_URL = "https://myapp.internal/paystack-callback";
+const CANCEL_URL = "https://myapp.internal/paystack-cancel";
 
 const ConfirmRoute = () => {
   const mapRef = useRef<MapView | null>(null);
-
+  const modalMapRef = useRef<MapView | null>(null);
+  const { screenName, phone } = useLocalSearchParams<{ screenName: string, phone : string }>();
   const [pickup, setPickup] = useState<LocationData | null>(null);
   const [dropoff, setDropoff] = useState<LocationData | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<
@@ -28,19 +38,184 @@ const ConfirmRoute = () => {
   const [durationMin, setDurationMin] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<string>("0.00");
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [paymentType, setPaymentType] = useState<string | boolean>(false);
+  // Paystack WebView State
+  const [paystackUrl, setPaystackUrl] = useState<string | null>(null);
+  const [showPaystackModal, setShowPaystackModal] = useState<boolean>(false);
+  const [isInitializingPayment, setIsInitializingPayment] =
+    useState<boolean>(false);
+  const [isSubmittingCashOrder, setIsSubmittingCashOrder] =
+    useState<boolean>(false);
+  // console.log(screenName, phone);
+  if(typeof phone == "undefined"){
+    console.log("number is undefined")
+  }
   const handleSubmit = async () => {
-    if (calculatedPrice != "0.00") {
-      await AsyncStorage.setItem("price", calculatedPrice);
+    if (calculatedPrice !== "0.00") {
+      // await AsyncStorage.setItem("price", calculatedPrice);
       setModal(true);
-      // return router.push("/(dashboard)/(orders)/lookingforrider");
     }
   };
-  const payOnDelivery = () => {
-    Alert.alert("message", "hi");
-    return router.push("/(dashboard)/(orders)/lookingforrider");
+
+  const payOnDelivery = async () => {
+    try {
+      setIsSubmittingCashOrder(true);
+      axios
+        .post(`${DEV ? "http://192.168.43.115:4000" : url}/api/deliveries`, {
+          senderId: await AsyncStorage.getItem("userId"),
+          deliveryType: screenName,
+          pickupAddress: pickup?.address,
+          pickupLatitude: pickup?.latitude,
+          pickupLongitude: pickup?.longitude,
+          pickupContactName: await AsyncStorage.getItem("fullname"),
+          pickupContactPhone: await AsyncStorage.getItem("number"),
+          dropoffAddress: dropoff?.address,
+          dropoffLatitude: dropoff?.latitude,
+          dropoffLongitude: dropoff?.longitude,
+          recipientName: "not set yet" ,
+          recipientPhone: typeof phone == "undefined" ? "not set yet" : phone,
+          packageWeightKg: 1,
+          distanceKm: durationMin,
+          deliveryFee: calculatedPrice,
+          totalAmount: calculatedPrice,
+          paymentMethod: "paystack",
+          paymentStatus: "pending",
+        })
+        .then(async (res) => {
+          Alert.alert("message", "Oreder has been made successfully");
+          setModal(false);
+          await AsyncStorage.setItem("disableCancelButton", "!disabled");
+          router.push("/(dashboard)/(orders)/lookingforrider");
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      Alert.alert("Error", "Could not connect to the server.");
+    } finally {
+      setIsSubmittingCashOrder(false);
+    }
   };
-  const payRightNow = () => {};
+
+  const payRightNow = async () => {
+    try {
+      setIsInitializingPayment(true);
+
+      const amountInSubunits = Math.round(parseFloat(calculatedPrice) * 100);
+      const response = await fetch(
+        `${DEV ? "http://192.168.43.115:4000" : url}/api/payments/initialize`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: amountInSubunits,
+            email: "customer@example.com",
+            userId: await AsyncStorage.getItem("userId"),
+            deliveryAddress: dropoff?.address,
+            deliveryLatitude: dropoff?.latitude,
+            deliveryLongitude: dropoff?.longitude,
+          }),
+        },
+      );
+
+      const result = await response.json();
+      // console.log(screenName);
+
+      if (result.success && result.data?.authorization_url) {
+        await AsyncStorage.setItem("disableCancelButton", "disabled");
+        setPaymentType("payRightNow");
+        setPaystackUrl(result.data.authorization_url);
+        setModal(false); // Close modal
+        setShowPaystackModal(true); // Open WebView
+      } else {
+        Alert.alert(
+          "Payment Error", 
+          result.message || "Unable to create payment transaction.",
+        );
+      }
+    } catch (error) {
+      console.error("Payment initialization failed:", error);
+      Alert.alert("Network Error", "Could not connect to the backend server.");
+    } finally {
+      setIsInitializingPayment(false);
+    }
+  };
+
+  const handleNavigationStateChange = async (state: WebViewNavigation) => {
+    const { url } = state;
+    if (!url) return;
+
+    if (url.startsWith(CALLBACK_URL)) {
+      setShowPaystackModal(false);
+      setPaystackUrl(null);
+      if (paymentType === "payRightNow") {
+        axios
+          .post(`${DEV ? "http://192.168.43.115:4000" : url}/api/deliveries`, {
+            senderId: await AsyncStorage.getItem("userId"),
+            deliveryType: screenName,
+            pickupAddress: pickup?.address,
+            pickupLatitude: pickup?.latitude,
+            pickupLongitude: pickup?.longitude,
+            pickupContactName: await AsyncStorage.getItem("fullname"),
+            pickupContactPhone: await AsyncStorage.getItem("number"),
+            dropoffAddress: dropoff?.address,
+            dropoffLatitude: dropoff?.latitude,
+            dropoffLongitude: dropoff?.longitude,
+            recipientName: "not set yet",
+            recipientPhone: typeof phone == "undefined" ? "not set yet" : phone,
+            packageWeightKg: 1,
+            distanceKm: durationMin,
+            deliveryFee: calculatedPrice,
+            totalAmount: calculatedPrice,
+            paymentMethod: "paystack",
+            paymentStatus: "paidandwaiting",
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => console.log(err));
+      }
+      if (paymentType === "payOnDelivery") {
+        axios
+          .post(`${DEV ? "http://192.168.43.115:4000" : url}/api/deliveries`, {
+            senderId: await AsyncStorage.getItem("userId"),
+            deliveryType: screenName,
+            pickupAddress: pickup?.address,
+            pickupLatitude: pickup?.latitude,
+            pickupLongitude: pickup?.longitude,
+            pickupContactName: await AsyncStorage.getItem("fullname"),
+            pickupContactPhone: await AsyncStorage.getItem("number"),
+            dropoffAddress: dropoff?.address,
+            dropoffLatitude: dropoff?.latitude,
+            dropoffLongitude: dropoff?.longitude,
+            recipientName: "not set yet",
+            recipientPhone: "not set yet",
+            packageWeightKg: 1,
+            distanceKm: durationMin,
+            deliveryFee: calculatedPrice,
+            totalAmount: calculatedPrice,
+            paymentMethod: "paystack",
+            paymentStatus: "pending",
+          })
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((err) => console.log(err));
+      }
+
+      Alert.alert("Success", "Payment processed! Finding a rider...");
+      return router.push("/(dashboard)/(orders)/lookingforrider");
+    }
+
+    if (
+      url.startsWith(CANCEL_URL) ||
+      url === "https://standard.paystack.co/close"
+    ) {
+      setShowPaystackModal(false);
+      setPaystackUrl(null);
+      Alert.alert("Cancelled", "Payment process was cancelled.");
+    }
+  };
 
   useEffect(() => {
     const loadRouteData = async () => {
@@ -63,7 +238,6 @@ const ConfirmRoute = () => {
         setPickup(parsedPickup);
         setDropoff(parsedDropoff);
 
-        // Fetch route geometry & travel estimates from Google Directions API
         const directionsUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${parsedPickup.latitude},${parsedPickup.longitude}&destination=${parsedDropoff.latitude},${parsedDropoff.longitude}&key=${GOOGLE_PLACES_API_KEY}`;
 
         const response = await fetch(directionsUrl);
@@ -78,15 +252,12 @@ const ConfirmRoute = () => {
 
           setDurationMin(durInMinutes);
 
-          // Pricing logic: Base fare (5 GH₵) + 2.50 GH₵/km
           const totalPrice = (5 + distInKm * 2.5).toFixed(2);
           setCalculatedPrice(totalPrice);
 
-          // Decode Polyline Points
           const decodedCoords = decodePolyline(route.overview_polyline.points);
           setRouteCoordinates(decodedCoords);
 
-          // Fit map boundaries to include both points
           setTimeout(() => {
             mapRef.current?.fitToCoordinates(
               [
@@ -120,7 +291,6 @@ const ConfirmRoute = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* MAP VIEW REPLACING BLACK CONTAINER */}
       <View className="h-5/6 bg-black">
         {pickup && dropoff ? (
           <MapView
@@ -135,7 +305,6 @@ const ConfirmRoute = () => {
             }}
             customMapStyle={greenMapStyle}
           >
-            {/* Pickup Marker */}
             <Marker
               coordinate={{
                 latitude: pickup.latitude,
@@ -145,8 +314,6 @@ const ConfirmRoute = () => {
               description={pickup.address}
               pinColor="green"
             />
-
-            {/* Dropoff Marker */}
             <Marker
               coordinate={{
                 latitude: dropoff.latitude,
@@ -156,8 +323,6 @@ const ConfirmRoute = () => {
               description={dropoff.address}
               pinColor="red"
             />
-
-            {/* Route Polyline */}
             {routeCoordinates.length > 0 && (
               <Polyline
                 coordinates={routeCoordinates}
@@ -220,11 +385,7 @@ const ConfirmRoute = () => {
 
         <Button
           radius={"xl"}
-          buttonStyle={{
-            backgroundColor: "black",
-            marginTop: 25,
-            height: 50,
-          }}
+          buttonStyle={{ backgroundColor: "black", marginTop: 25, height: 50 }}
           onPress={handleSubmit}
         >
           <Text
@@ -236,6 +397,8 @@ const ConfirmRoute = () => {
           </Text>
         </Button>
       </View>
+
+      {/* Payment Selection Modal */}
       {modal && (
         <View className="absolute inset-0 z-50 bg-black/90 flex-col justify-center items-center">
           <View className="w-5/6 h-4/6 bg-light-gray1 rounded-3xl p-5">
@@ -243,20 +406,13 @@ const ConfirmRoute = () => {
               className="h-3/5 rounded-3xl overflow-hidden"
               style={{
                 backgroundColor: "#ffffff",
-                // iOS Shadow
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.15,
-                shadowRadius: 8,
-                // Android Shadow
                 elevation: 6,
-                // Keep zIndex high so the shadow floats above elements below it
                 zIndex: 10,
               }}
             >
               {pickup && dropoff ? (
                 <MapView
-                  ref={mapRef}
+                  ref={modalMapRef}
                   provider={PROVIDER_GOOGLE}
                   style={{ flex: 1 }}
                   initialRegion={{
@@ -267,29 +423,22 @@ const ConfirmRoute = () => {
                   }}
                   customMapStyle={greenMapStyle}
                 >
-                  {/* Pickup Marker */}
                   <Marker
                     coordinate={{
                       latitude: pickup.latitude,
                       longitude: pickup.longitude,
                     }}
                     title="Pickup"
-                    description={pickup.address}
                     pinColor="green"
                   />
-
-                  {/* Dropoff Marker */}
                   <Marker
                     coordinate={{
                       latitude: dropoff.latitude,
                       longitude: dropoff.longitude,
                     }}
                     title="Dropoff"
-                    description={dropoff.address}
                     pinColor="red"
                   />
-
-                  {/* Route Polyline */}
                   {routeCoordinates.length > 0 && (
                     <Polyline
                       coordinates={routeCoordinates}
@@ -307,22 +456,21 @@ const ConfirmRoute = () => {
 
             <Button
               onPress={payOnDelivery}
+              loading={isSubmittingCashOrder}
+              disabled={isSubmittingCashOrder}
               radius={"xl"}
-              buttonStyle={{
-                backgroundColor: "#f1f1f1",
-              }}
+              buttonStyle={{ backgroundColor: "#f1f1f1" }}
               containerStyle={{
                 borderRadius: 30,
-                backgroundColor: "#f1f1f1",
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.15,
-                shadowRadius: 8,
-                elevation: 4,
                 marginTop: 40,
                 height: 50,
-                display: "flex",
                 justifyContent: "center",
+                // Drop shadow props
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.15,
+                shadowRadius: 3.84,
+                elevation: 3,
               }}
             >
               <Text
@@ -333,24 +481,24 @@ const ConfirmRoute = () => {
                 Pay on delivery
               </Text>
             </Button>
+
             <Button
               radius={"xl"}
               onPress={payRightNow}
-              buttonStyle={{
-                backgroundColor: "black",
-              }}
+              loading={isInitializingPayment}
+              disabled={isInitializingPayment}
+              buttonStyle={{ backgroundColor: "black" }}
               containerStyle={{
                 borderRadius: 30,
-                backgroundColor: "black",
-                shadowColor: "#000000",
-                shadowOffset: { width: 0, height: 0 },
-                shadowOpacity: 0.15,
-                shadowRadius: 8,
-                elevation: 4,
                 marginTop: 20,
                 height: 50,
-                display: "flex",
                 justifyContent: "center",
+                // Drop shadow props
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4.65,
+                elevation: 6,
               }}
             >
               <Text
@@ -364,6 +512,36 @@ const ConfirmRoute = () => {
           </View>
         </View>
       )}
+
+      {/* Paystack Checkout WebView Modal */}
+      <Modal
+        visible={showPaystackModal}
+        animationType="slide"
+        onRequestClose={() => setShowPaystackModal(false)}
+      >
+        <SafeAreaView className="flex-1 bg-white">
+          <View className="flex-row justify-between items-center p-4 border-b border-gray-200">
+            <Text className="text-lg font-bold">Complete Payment</Text>
+            <TouchableOpacity onPress={() => setShowPaystackModal(false)}>
+              <Text className="text-red-500 font-bold text-base">Close</Text>
+            </TouchableOpacity>
+          </View>
+          {paystackUrl && (
+            <WebView
+              source={{ uri: paystackUrl }}
+              onNavigationStateChange={handleNavigationStateChange}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              startInLoadingState={true}
+              renderLoading={() => (
+                <View className="flex-1 justify-center items-center">
+                  <ActivityIndicator size="large" color="#FDBF07" />
+                </View>
+              )}
+            />
+          )}
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 };

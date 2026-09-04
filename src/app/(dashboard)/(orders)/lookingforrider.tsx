@@ -2,6 +2,7 @@ import type { LocationData } from "@/types/types";
 import { decodePolyline } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearProgress } from "@rneui/themed";
+import { useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -14,11 +15,11 @@ import {
 import Iconify from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { greenMapStyle } from "@/utils";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 const LookingForRiderRoute = () => {
   const mapRef = useRef<MapView | null>(null);
+  const navigation = useNavigation();
 
   const [pickup, setPickup] = useState<LocationData | null>(null);
   const [dropoff, setDropoff] = useState<LocationData | null>(null);
@@ -26,7 +27,7 @@ const LookingForRiderRoute = () => {
     { latitude: number; longitude: number }[]
   >([]);
   const [modal, setModal] = useState(false);
-
+  const [disableButton, setDisableButton] = useState<string | null>(null);
   const [durationMin, setDurationMin] = useState<number>(0);
   const [calculatedPrice, setCalculatedPrice] = useState<string>("0.00");
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -38,7 +39,7 @@ const LookingForRiderRoute = () => {
   };
 
   useEffect(() => {
-    const loadRouteData = async () => {
+    (async () => {
       try {
         const storedPickup = await AsyncStorage.getItem("pickupLocation");
         const storedDropoff = await AsyncStorage.getItem("dropoffLocation");
@@ -108,10 +109,22 @@ const LookingForRiderRoute = () => {
       } finally {
         setIsLoading(false);
       }
-    };
+    })();
 
-    loadRouteData();
+    (async () => {
+      const i = await AsyncStorage.getItem("disableCancelButton");
+      if (i != null) {
+        setDisableButton(i);
+      }
+    })();
   }, []);
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("beforeRemove", async (e) => {
+      await AsyncStorage.removeItem("disableCancelButton");
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -199,28 +212,36 @@ const LookingForRiderRoute = () => {
           {/* <Pressable>
             <Iconify icon="weui:location-outlined" size={30} color={"black"} />
           </Pressable> */}
-          <Pressable className=" flex-col items-center gap-1 " >
-            <View className=" p-3 rounded-full bg-light-gray2 " >
-             <Iconify icon="weui:location-outlined" size={30} color={"black"} />
+          <Pressable className=" flex-col items-center gap-1 ">
+            <View className=" p-3 rounded-full bg-light-gray2 ">
+              <Iconify
+                icon="weui:location-outlined"
+                size={30}
+                color={"black"}
+              />
             </View>
-             <Text
-              className="text-sm"
-              style={{ fontFamily: "Inter_300Light" }}
-            >
-            Edit pickup
+            <Text className="text-sm" style={{ fontFamily: "Inter_300Light" }}>
+              Edit pickup
             </Text>
           </Pressable>
-          <Pressable onPress={() => setModal(true)} className=" flex-col items-center gap-1 " >
-            <View className=" p-3 rounded-full bg-light-gray2 " >
-              <Iconify icon="mdi:car-off" size={30} color={"black"} />
-            </View>
-             <Text
-              className="text-sm"
-              style={{ fontFamily: "Inter_300Light" }}
+
+          {disableButton == "!disabled" && (
+            <Pressable
+              onPress={() => setModal(true)}
+              // disabled={disableButton != "disable"}
+              className=" flex-col items-center gap-1 "
             >
-             Cancel ride
-            </Text>
-          </Pressable>
+              <View className=" p-3 rounded-full bg-light-gray2 ">
+                <Iconify icon="mdi:car-off" size={30} color={"black"} />
+              </View>
+              <Text
+                className="text-sm"
+                style={{ fontFamily: "Inter_300Light" }}
+              >
+                Cancel ride
+              </Text>
+            </Pressable>
+          )}
         </View>
       </View>
       {modal && (

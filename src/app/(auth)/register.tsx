@@ -1,6 +1,7 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Button, Input } from "@rneui/themed";
 import axios from "axios";
+import { router } from "expo-router";
 import { useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -24,6 +25,10 @@ const activeShadowStyle = {
   shadowRadius: 3.84,
   elevation: 5,
 };
+
+// Access Expo public environment variables
+const url = process.env.EXPO_PUBLIC_BACKEND_URL;
+const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
 
 const Register = () => {
   const [activeTab, setActiveTab] = useState("email");
@@ -93,7 +98,7 @@ const Register = () => {
     if (!hasError) {
       axios
         .post(
-          "http://192.168.43.115:4000/api/users",
+          `${DEV ? "http://192.168.43.115:4000" : url}/api/users`,
           {
             email:
               activeTab === "email"
@@ -101,7 +106,7 @@ const Register = () => {
                 : data.emailOrPhone.trim(),
             passwordHash: data.password,
           },
-          { withCredentials: true }
+          { withCredentials: true },
         )
         .then((res) => {
           console.log(res);
@@ -131,7 +136,10 @@ const Register = () => {
 
     // Handle multi-character paste (e.g. user pastes 6 digits)
     if (text.length > 1) {
-      const pastedDigits = text.replace(/[^0-9]/g, "").slice(0, 6).split("");
+      const pastedDigits = text
+        .replace(/[^0-9]/g, "")
+        .slice(0, 6)
+        .split("");
       const newOtp = [...otp];
 
       pastedDigits.forEach((digit, i) => {
@@ -158,7 +166,7 @@ const Register = () => {
 
   const handleKeyPress = (
     e: NativeSyntheticEvent<TextInputKeyPressEventData>,
-    index: number
+    index: number,
   ) => {
     if (e.nativeEvent.key === "Backspace") {
       if (otp[index] === "" && index > 0) {
@@ -183,7 +191,7 @@ const Register = () => {
 
     axios
       .post(
-        "http://192.168.43.115:4000/api/verify-email",
+        `${DEV ? "http://192.168.43.115:4000" : url}/api/verify-email`,
         {
           email:
             activeTab === "email"
@@ -191,16 +199,17 @@ const Register = () => {
               : data.emailOrPhone.trim(),
           code: code,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .then((res) => {
         console.log("Verification successful:", res);
         setIsModalVisible(false);
+        router.push("/(auth)");
       })
       .catch((err) => {
         console.log("Verification failed:", err);
         setVerifyError(
-          err.response?.data?.message || "Invalid code. Please try again."
+          err.response?.data?.message || "Invalid code. Please try again.",
         );
       })
       .finally(() => {

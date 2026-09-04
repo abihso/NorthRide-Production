@@ -1,7 +1,8 @@
-import { decodePolyline } from "@/utils";
+import type { LocationData, PaymentOption } from "@/types/types";
+import { decodePolyline, greenMapStyle } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "@rneui/base";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,9 +17,6 @@ import {
 import { Iconify } from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { greenMapStyle } from "@/utils";
-import type { LocationData } from "@/types/types";
-import type { PaymentOption } from "@/types/types";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 const PAYMENT_OPTIONS: PaymentOption[] = [
@@ -29,7 +27,7 @@ const PAYMENT_OPTIONS: PaymentOption[] = [
 
 const CalculatePrice = () => {
   const mapRef = useRef<MapView | null>(null);
-
+  const { screenName } = useLocalSearchParams<{ screenName: string }>();
   const [pickup, setPickup] = useState<LocationData | null>(null);
   const [dropoff, setDropoff] = useState<LocationData | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<
@@ -46,10 +44,23 @@ const CalculatePrice = () => {
   const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
   const handleSubmit = async () => {
-      return router.push("/(dashboard)/(orders)/comfirmroute");
+    if (screenName != "ride") {
+      router.push({
+        pathname: "/(dashboard)/(orders)/productDetails",
+        params: {
+          screenName,
+        },
+      });
+    } else {
+      router.push({
+        pathname: "/(dashboard)/(orders)/comfirmroute",
+        params: {
+          screenName,
+        },
+      });
+    }
   };
 
-  // Fetch saved locations & calculate route
   useEffect(() => {
     const loadRouteData = async () => {
       try {
