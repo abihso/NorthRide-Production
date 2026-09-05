@@ -5,14 +5,15 @@ import { Button } from "@rneui/base";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Modal,
+    Platform,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
 } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
@@ -153,7 +154,7 @@ const CalculatePrice = () => {
         {pickup && dropoff ? (
           <MapView
             ref={mapRef}
-            provider={PROVIDER_GOOGLE}
+            provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
             style={{ flex: 1 }}
             initialRegion={{
               latitude: pickup.latitude,
@@ -161,7 +162,9 @@ const CalculatePrice = () => {
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
             }}
-            customMapStyle={greenMapStyle}
+            customMapStyle={
+              Platform.OS === "android" ? greenMapStyle : undefined
+            }
           >
             {/* Pickup Marker */}
             <Marker

@@ -5,12 +5,13 @@ import { LinearProgress } from "@rneui/themed";
 import { useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Pressable,
-  Text,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Platform,
+    Pressable,
+    Text,
+    View,
 } from "react-native";
 import Iconify from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
@@ -133,7 +134,7 @@ const LookingForRiderRoute = () => {
         {pickup && dropoff ? (
           <MapView
             ref={mapRef}
-            provider={PROVIDER_GOOGLE}
+            provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
             style={{ flex: 1 }}
             initialRegion={{
               latitude: pickup.latitude,

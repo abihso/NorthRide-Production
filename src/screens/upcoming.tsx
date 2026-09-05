@@ -1,11 +1,12 @@
 import { decodePolyline } from "@/utils";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
+    ActivityIndicator,
+    Platform,
+    Pressable,
+    ScrollView,
+    Text,
+    View,
 } from "react-native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
@@ -84,7 +85,7 @@ const Upcoming = () => {
         <View className="h-48 overflow-hidden rounded-2xl relative">
           <MapView
             ref={mapRef}
-            provider={PROVIDER_GOOGLE}
+            provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
             style={{ flex: 1 }}
             initialRegion={{
               latitude: pickup.latitude,
@@ -214,7 +215,7 @@ const Upcoming = () => {
       </Text>
       <View className="h-44 rounded-3xl bg-light-gray1 mt-4 p-5">
         <Text className=" text-xs" style={{ fontFamily: "Inter_300Light" }}>
-         NorthRides balance is not available with this payment method
+          NorthRides balance is not available with this payment method
         </Text>
       </View>
     </ScrollView>

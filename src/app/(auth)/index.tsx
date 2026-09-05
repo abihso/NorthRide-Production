@@ -103,7 +103,8 @@ const Login = () => {
           );
           console.log(res.data.user.userType);
           if (res.data.user.userType == "rider") {
-            router.push("/(riders-dashboard)");
+            // router.push("/(riders-dashboard)");
+            router.push("/(dashboard)");
           } else if (res.data.user.userType == "customer") {
             router.push("/(dashboard)");
           }

@@ -6,13 +6,14 @@ import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Modal,
-  Text,
-  TouchableOpacity,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Modal,
+    Platform,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,7 +29,10 @@ const CANCEL_URL = "https://myapp.internal/paystack-cancel";
 const ConfirmRoute = () => {
   const mapRef = useRef<MapView | null>(null);
   const modalMapRef = useRef<MapView | null>(null);
-  const { screenName, phone } = useLocalSearchParams<{ screenName: string, phone : string }>();
+  const { screenName, phone } = useLocalSearchParams<{
+    screenName: string;
+    phone: string;
+  }>();
   const [pickup, setPickup] = useState<LocationData | null>(null);
   const [dropoff, setDropoff] = useState<LocationData | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<
@@ -47,8 +51,8 @@ const ConfirmRoute = () => {
   const [isSubmittingCashOrder, setIsSubmittingCashOrder] =
     useState<boolean>(false);
   // console.log(screenName, phone);
-  if(typeof phone == "undefined"){
-    console.log("number is undefined")
+  if (typeof phone == "undefined") {
+    console.log("number is undefined");
   }
   const handleSubmit = async () => {
     if (calculatedPrice !== "0.00") {
@@ -72,7 +76,7 @@ const ConfirmRoute = () => {
           dropoffAddress: dropoff?.address,
           dropoffLatitude: dropoff?.latitude,
           dropoffLongitude: dropoff?.longitude,
-          recipientName: "not set yet" ,
+          recipientName: "not set yet",
           recipientPhone: typeof phone == "undefined" ? "not set yet" : phone,
           packageWeightKg: 1,
           distanceKm: durationMin,
@@ -129,7 +133,7 @@ const ConfirmRoute = () => {
         setShowPaystackModal(true); // Open WebView
       } else {
         Alert.alert(
-          "Payment Error", 
+          "Payment Error",
           result.message || "Unable to create payment transaction.",
         );
       }
@@ -295,7 +299,7 @@ const ConfirmRoute = () => {
         {pickup && dropoff ? (
           <MapView
             ref={mapRef}
-            provider={PROVIDER_GOOGLE}
+            provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
             style={{ flex: 1 }}
             initialRegion={{
               latitude: pickup.latitude,
@@ -303,7 +307,9 @@ const ConfirmRoute = () => {
               latitudeDelta: 0.05,
               longitudeDelta: 0.05,
             }}
-            customMapStyle={greenMapStyle}
+            customMapStyle={
+              Platform.OS === "android" ? greenMapStyle : undefined
+            }
           >
             <Marker
               coordinate={{
@@ -413,7 +419,9 @@ const ConfirmRoute = () => {
               {pickup && dropoff ? (
                 <MapView
                   ref={modalMapRef}
-                  provider={PROVIDER_GOOGLE}
+                  provider={
+                    Platform.OS === "android" ? PROVIDER_GOOGLE : undefined
+                  }
                   style={{ flex: 1 }}
                   initialRegion={{
                     latitude: pickup.latitude,
@@ -421,7 +429,9 @@ const ConfirmRoute = () => {
                     latitudeDelta: 0.05,
                     longitudeDelta: 0.05,
                   }}
-                  customMapStyle={greenMapStyle}
+                  customMapStyle={
+                    Platform.OS === "android" ? greenMapStyle : undefined
+                  }
                 >
                   <Marker
                     coordinate={{

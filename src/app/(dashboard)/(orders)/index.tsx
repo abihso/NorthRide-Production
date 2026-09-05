@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -653,9 +654,13 @@ const Drop_n_Pickoff = () => {
       <Modal
         visible={selectingTarget !== null}
         animationType="slide"
+        statusBarTranslucent={false}
         onRequestClose={() => setSelectingTarget(null)}
       >
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView
+          className="flex-1 bg-white"
+          edges={["top", "right", "bottom", "left"]}
+        >
           <View className="p-4 flex-row justify-between items-center bg-white border-b border-gray-100 z-10">
             <Text
               className="text-base capitalize"
@@ -670,7 +675,7 @@ const Drop_n_Pickoff = () => {
 
           <View className="flex-1 relative">
             <MapView
-              provider={PROVIDER_GOOGLE}
+              provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
               ref={mapRef}
               style={{ flex: 1 }}
               initialRegion={{
@@ -679,7 +684,9 @@ const Drop_n_Pickoff = () => {
                 latitudeDelta: 0.015,
                 longitudeDelta: 0.015,
               }}
-              customMapStyle={greenMapStyle}
+              customMapStyle={
+                Platform.OS === "android" ? greenMapStyle : undefined
+              }
               onRegionChangeComplete={handleRegionChangeComplete}
             />
             <View className="absolute top-1/2 left-1/2 -ml-4 -mt-8 pointer-events-none items-center justify-center z-10">

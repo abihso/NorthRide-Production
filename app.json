@@ -8,7 +8,8 @@
     "scheme": "northride",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.anonymous.NorthRide"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +24,9 @@
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "READ_CONTACTS",
-        "WRITE_CONTACTS"
+        "WRITE_CONTACTS",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
       ],
       "config": {
         "googleMaps": {
@@ -37,6 +40,12 @@
     },
     "plugins": [
       "expo-router",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow NorthRide to use your location to select pickup and dropoff points."
+        }
+      ],
       [
         "expo-splash-screen",
         {
