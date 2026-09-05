@@ -7,7 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const GhanaCard = () => {
   return (
     <SafeAreaView className="flex-1 py-3 px-5 bg-white">
-      {/* Header */}
       <View className="h-10 flex-row justify-between items-center">
         <Iconify icon="material-symbols:arrow-back-rounded" size={24} />
         <Text style={{ fontFamily: "Inter_600SemiBold" }} className="text-lg">
@@ -28,11 +27,11 @@ const GhanaCard = () => {
         Take a photo of your Ghana Card
       </Text>
       <View className=" flex mt-5 justify-center items-center">
-        <View className="h-40 w-[90%] rounded-xl bg-light-gray1"></View>
+        <View className="h-40 w-[90%] rounded-3xl bg-light-gray1"></View>
         <Text style={{ fontFamily: "Inter_600SemiBold" }}>Front</Text>
       </View>
       <View className=" flex mt-2 justify-center items-center">
-        <View className="h-40 w-[90%] rounded-xl bg-light-gray1"></View>
+        <View className="h-40 w-[90%] rounded-3xl bg-light-gray1"></View>
         <Text style={{ fontFamily: "Inter_600SemiBold" }}>Back</Text>
       </View>
       <Text style={{ fontFamily: "Inter_400Regular" }} className="text-sm mt-5">
@@ -69,7 +68,6 @@ const GhanaCard = () => {
           and driver’s license.
         </Text>
       </View>
-      {/* Bottom Sticky Action Button */}
       <View className="px-6 absolute left-0 right-0 bottom-10">
         <Button
           radius={20}

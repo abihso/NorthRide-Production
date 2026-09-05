@@ -4,18 +4,19 @@ module.exports = {
   presets: [require("nativewind/preset")],
   theme: {
     extend: {
-      colors : {
-        "light-gray" : "#f6f6f6",
-        "light-gray1" : "#F2F2F2",
-        "light-gray2" : "#E4DFDF",
-        "light-gray3" : "#D7D7D7",
-        "light-gray4" : "#968F8F",
-        "light-black" : "#131313",
-        "light-black1" : "#626262",
-        "light-black2" : "#716D6D",
-        "light-pink" : "#FDBF07",
-      }
+      colors: {
+        "light-gray": "#f6f6f6",
+        "light-gray1": "#F2F2F2",
+        "light-gray2": "#E4DFDF",
+        "light-gray3": "#D7D7D7",
+        "light-gray4": "#968F8F",
+        "light-gray5": "#E0E0E0",
+        "light-black": "#131313",
+        "light-black1": "#626262",
+        "light-black2": "#716D6D",
+        "light-pink": "#FDBF07",
+      },
     },
   },
   plugins: [],
-}
+};

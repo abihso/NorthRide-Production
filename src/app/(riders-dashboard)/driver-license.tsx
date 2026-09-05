@@ -1,7 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
-import { Image, Text, View } from "react-native";
+import { Text, View, Image } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -22,116 +22,55 @@ const DriversLicense = () => {
         </Text>
       </View>
 
-      {/* Sub-Header info */}
-      <Text style={{ fontFamily: "Inter_300Light" }} className="text-xs mt-5">
-        Signing up for
-      </Text>
-      <View className="flex-row items-center gap-2 mt-1">
-        <Text style={{ fontFamily: "Inter_600SemiBold" }} className="text-sm">
-          Accra
-        </Text>
-        <View className="w-1.5 h-1.5 bg-black rounded-full" />
-        <Text style={{ fontFamily: "Inter_600SemiBold" }} className="text-sm">
-          Rides
-        </Text>
-        <View className="w-1.5 h-1.5 bg-black rounded-full" />
-        <Image
-          source={require("@/assets/images/motor.png")}
-          className="w-6 h-6"
-          resizeMode="contain"
-        />
-      </View>
-
-      {/* Greeting Title */}
       <Text
         style={{ fontFamily: "Inter_600SemiBold" }}
         className="text-3xl mt-5"
       >
-        Welcome, Antwi Boasiako
+        Take a photo of your Drivers License
       </Text>
-      <Text
-        style={{ fontFamily: "Inter_400Regular" }}
-        className="text-sm mt-2 text-gray-600"
-      >
-        Complete 5 more steps to start earning
-      </Text>
-
-      {/* Steps List Card */}
-      <View className="bg-light-gray1 rounded-3xl mt-8 px-5 py-2">
-        {/* Step 1: Ghana Card */}
-        <View className="flex-row justify-between items-center border-b py-4 border-light-gray3">
-          <View className="flex-row items-center gap-3 flex-1 pr-2">
-            <Iconify icon="boxicons:user-id-card" size={24} />
-            <Text
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-base"
-            >
-              Ghana Card
-            </Text>
-          </View>
-          <FontAwesome name="chevron-right" size={16} color="#888888" />
-        </View>
-
-        {/* Step 2: Profile Picture */}
-        <View className="flex-row justify-between items-center border-b py-4 border-light-gray3">
-          <View className="flex-row items-center gap-3 flex-1 pr-2">
-            <Iconify icon="iconamoon:profile-circle-bold" size={24} />
-            <Text
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-base"
-            >
-              Profile Picture
-            </Text>
-          </View>
-          <FontAwesome name="chevron-right" size={16} color="#888888" />
-        </View>
-
-        {/* Step 3: Drivers License */}
-        <View className="flex-row justify-between items-center border-b py-4 border-light-gray3">
-          <View className="flex-row items-center gap-3 flex-1 pr-2">
-            <Iconify icon="ph:cardholder-bold" size={24} />
-            <Text
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-base"
-            >
-              Drivers License
-            </Text>
-          </View>
-          <FontAwesome name="chevron-right" size={16} color="#888888" />
-        </View>
-
-        {/* Step 4: Roadworthiness Sticker */}
-        <View className="flex-row justify-between items-center border-b py-4 border-light-gray3">
-          <View className="flex-row items-center gap-3 flex-1 pr-2">
-            <Iconify icon="tdesign:shortcut" size={24} />
-            <Text
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-base"
-            >
-              Roadworthiness sticker from DVLA
-            </Text>
-          </View>
-          <FontAwesome name="chevron-right" size={16} color="#888888" />
-        </View>
-
-        {/* Step 5: Insurance Sticker */}
-        <View className="flex-row justify-between items-center py-4">
-          <View className="flex-row items-center gap-3 flex-1 pr-2">
-            <Iconify
-              icon="material-symbols:privacy-tip-outline-rounded"
-              size={24}
-            />
-            <Text
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-base"
-            >
-              Insurance Sticker
-            </Text>
-          </View>
-          <FontAwesome name="chevron-right" size={16} color="#888888" />
-        </View>
+      <View className=" flex mt-5 justify-center items-center">
+        <View className="h-40 w-[90%] rounded-3xl bg-light-gray1"></View>
+        <Text style={{ fontFamily: "Inter_600SemiBold" }}>Front</Text>
       </View>
-
+      <View className=" flex mt-2 justify-center items-center">
+        <View className="h-40 w-[90%] rounded-3xl bg-light-gray1"></View>
+        <Text style={{ fontFamily: "Inter_600SemiBold" }}>Back</Text>
+      </View>
+      <Text style={{ fontFamily: "Inter_400Regular" }} className="text-sm mt-5">
+        To drive with Uber in Ghana, you must hold a valid Ghanaian driver’s
+        license that meets DVLA requirements. This confirms you’re legally
+        allowed to operate a vehicle and are at least 21 years old.
+      </Text>
+      <Text style={{ fontFamily: "Inter_600SemiBold" }} className="my-2 ml-5">
+        Follow these tips to upload your ID:
+      </Text>
+      <View className="flex-row items-center gap-2">
+        <View className="w-2 h-2 rounded-full bg-black" />
+        <Text style={{ fontFamily: "Inter_400Regular" }} className="text-sm">
+          Capture the front side first and then the back side second
+        </Text>
+      </View>
+      <View className="flex-row items-center gap-2 mt-1 ">
+        <View className="w-2 h-2 rounded-full bg-black" />
+        <Text style={{ fontFamily: "Inter_400Regular" }} className="text-sm">
+          Make sure your full name, date of birth, and ID number are clearly
+          visible.
+        </Text>
+      </View>
+      <View className="flex-row items-center gap-2 mt-1 ">
+        <View className="w-2 h-2 rounded-full bg-black" />
+        <Text style={{ fontFamily: "Inter_400Regular" }} className="text-sm">
+          Check that the ID is valid (not expired) and free of damage or heavy
+          glare.
+        </Text>
+      </View>
+      <View className="flex-row items-center gap-2 mt-1 ">
+        <View className="w-2 h-2 rounded-full bg-black" />
+        <Text style={{ fontFamily: "Inter_400Regular" }} className="text-sm">
+          The name on your ID should match the name on your NorthRide’s profile
+          and driver’s license.
+        </Text>
+      </View>
       {/* Bottom Sticky Action Button */}
       <View className="px-6 absolute left-0 right-0 bottom-10">
         <Button
@@ -144,15 +83,15 @@ const DriversLicense = () => {
             alignItems: "center",
             gap: 6,
           }}
-          onPress={() => router.push("/(riders-dashboard)/ghana-card")}
+          onPress={() => router.push("/(riders-dashboard)/roadworthiness")}
         >
           <Text
             style={{ fontFamily: "Inter_400Regular" }}
             className="text-light-pink text-xl"
           >
-            Next
+            Take Photo
           </Text>
-          <Iconify icon="akar-icons:arrow-right" size={24} color={"#FDBF07"} />
+          {/* <Iconify icon="akar-icons:arrow-right" size={24} color={"#FDBF07"} /> */}
         </Button>
       </View>
     </SafeAreaView>

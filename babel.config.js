@@ -50,6 +50,8 @@ module.exports = function (api) {
             "boxicons:user-id-card",
             "iconamoon:profile-circle-bold",
             "ph:cardholder-bold",
+            "ri:arrow-drop-down-line",
+            "material-symbols:check",
           ],
         },
       ],
