@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button, Input } from "@rneui/themed";
+import axios from "axios";
+import { router } from "expo-router";
+import { useState } from "react";
 import {
+  Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   Pressable,
   ScrollView,
   Text,
   View,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, Input } from "@rneui/themed";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import axios from "axios";
-import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const activeShadowStyle = {
   shadowColor: "#000",
@@ -29,6 +30,7 @@ const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
 const Login = () => {
   const [activeTab, setActiveTab] = useState("email");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState({
     emailOrPhone: "",
@@ -40,7 +42,9 @@ const Login = () => {
     password: "",
   });
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    if (isLoading) return;
+
     const newErrors = { emailOrPhone: "", password: "" };
     let hasError = false;
 
@@ -76,8 +80,10 @@ const Login = () => {
     setErrors(newErrors);
 
     if (!hasError) {
-      axios
-        .post(
+      setIsLoading(true);
+
+      try {
+        const res = await axios.post(
           `${DEV ? "http://192.168.43.115:4000" : url}/api/login`,
           {
             email:
@@ -87,31 +93,48 @@ const Login = () => {
             password: data.password,
           },
           { withCredentials: true },
-        )
-        .then(async (res) => {
-          await AsyncStorage.setItem(
-            "userId",
-            JSON.stringify(res.data.user.userId),
-          );
-          await AsyncStorage.setItem(
-            "number",
-            JSON.stringify(res.data.user.phoneNumber),
-          );
-          await AsyncStorage.setItem(
-            "fullname",
-            JSON.stringify(res.data.user.fullName),
-          );
-          console.log(res.data.user.userType);
-          if (res.data.user.userType == "rider") {
-            // router.push("/(riders-dashboard)");
-            router.push("/(dashboard)");
-          } else if (res.data.user.userType == "customer") {
-            router.push("/(dashboard)");
+        );
+
+        await AsyncStorage.setItem(
+          "userId",
+          JSON.stringify(res.data.user.userId),
+        );
+        await AsyncStorage.setItem(
+          "number",
+          JSON.stringify(res.data.user.phoneNumber),
+        );
+        await AsyncStorage.setItem(
+          "fullname",
+          JSON.stringify(res.data.user.fullName),
+        );
+
+        if (
+          res.data.user.userType === "rider" ||
+          res.data.user.userType === "customer"
+        ) {
+          router.push("/(dashboard)");
+        }
+      } catch (err) {
+        let message = "Unable to sign in. Please try again.";
+
+        if (axios.isAxiosError(err)) {
+          if (!err.response) {
+            message =
+              "We could not connect to the server. Please check your network connection and try again.";
+          } else if (
+            err.response.status === 401 ||
+            err.response.status === 403
+          ) {
+            message = "The email, phone number, or password is incorrect.";
+          } else if (typeof err.response.data?.message === "string") {
+            message = err.response.data.message;
           }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        }
+
+        Alert.alert("Sign in failed", message);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -275,6 +298,8 @@ const Login = () => {
                     height: 50,
                   }}
                   onPress={handleLogin}
+                  disabled={isLoading}
+                  loading={isLoading}
                 >
                   <Text
                     style={{ fontFamily: "Inter_600SemiBold" }}

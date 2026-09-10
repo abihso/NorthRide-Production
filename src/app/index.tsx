@@ -3,9 +3,10 @@ import { LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy/400Regul
 import { useFonts } from "@expo-google-fonts/inter";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
+  Animated,
   Image,
   Pressable,
+  PressableProps,
   Text,
   View,
   FlatList,
@@ -24,6 +25,47 @@ const { width } = Dimensions.get("window");
 const image1 = require("../../assets/images/womanriding.jpeg");
 const image2 = require("../../assets/images/Manwithbox.jpeg");
 const image3 = require("../../assets/images/Happywoman.jpeg");
+
+const AnimatedPressableBase = Animated.createAnimatedComponent(Pressable);
+
+interface AnimatedButtonProps extends PressableProps {
+  children: React.ReactNode;
+  className?: string;
+  style?: any;
+}
+
+function AnimatedButton({ children, style, ...props }: AnimatedButtonProps) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.95,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 4,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 4,
+    }).start();
+  };
+
+  return (
+    <AnimatedPressableBase
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      style={[{ transform: [{ scale: scaleAnim }] }, style]}
+      {...props}
+    >
+      {children}
+    </AnimatedPressableBase>
+  );
+}
 
 export default function Index() {
   const [fontsLoaded] = useFonts({
@@ -44,7 +86,7 @@ export default function Index() {
   useEffect(() => {
     const splashTimer = setTimeout(() => {
       setIsSplashVisible(false);
-    }, 5000); // 5000 ms = 5 seconds
+    }, 5000);
 
     return () => clearTimeout(splashTimer);
   }, []);
@@ -63,7 +105,6 @@ export default function Index() {
   };
 
   useEffect(() => {
-    // Only run slider timer once the splash screen is done
     if (isSplashVisible) return;
 
     if (intervalRef.current) {
@@ -182,8 +223,9 @@ export default function Index() {
                 </Text>
               </View>
               <View>
-                <Pressable
-                 onPress={() => router.push("/(auth)")}
+                {/* Animated Primary Button */}
+                <AnimatedButton
+                  onPress={() => router.push("/(auth)")}
                   className="bg-[#DCA501] -ml-2 w-[85%] h-10 items-center justify-center rounded-lg mt-10"
                 >
                   <Text
@@ -192,8 +234,10 @@ export default function Index() {
                   >
                     I already have an account
                   </Text>
-                </Pressable>
-                <Pressable
+                </AnimatedButton>
+
+                {/* Animated Secondary Button */}
+                <AnimatedButton
                   onPress={() => {
                     router.push("/(auth)/register");
                   }}
@@ -205,8 +249,9 @@ export default function Index() {
                   >
                     Create a new Account
                   </Text>
-                </Pressable>
+                </AnimatedButton>
               </View>
+
               <View className="flex-row gap-3 mt-24 justify-center items-center -ml-20">
                 <Text
                   style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
@@ -227,17 +272,23 @@ export default function Index() {
                   Help center
                 </Text>
               </View>
-              <Pressable className="absolute top-56 z-50 right-24">
+
+              {/* Animated Text Pressable */}
+              <AnimatedButton
+                onPress={() => router.push("/(auth)")}
+                className="absolute top-56 z-50 right-24"
+              >
                 <Text
                   className="text-white"
                   style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
                 >
                   Forget password?
                 </Text>
-              </Pressable>
+              </AnimatedButton>
             </View>
           </Shadow>
         </View>
+
         <View
           className={`absolute left-0 h-40 w-40 ${currentIndex == 0 ? "bg-[#DCA501]" : currentIndex == 1 ? "bg-[#F01B1B]" : "bg-[#9EE8E8]"} -rotate-12 -mb-16 -ml-8 rounded-[40px] bottom-0`}
         />

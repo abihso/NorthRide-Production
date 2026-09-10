@@ -140,6 +140,30 @@ const Drop_n_Pickoff = () => {
     return `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`;
   };
 
+  const getCurrentLocation = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      throw new Error("Location permission was not granted.");
+    }
+
+    if (!(await Location.hasServicesEnabledAsync())) {
+      throw new Error("Location services are disabled.");
+    }
+
+    const currentLocation = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.Highest,
+    });
+    const coords = {
+      latitude: currentLocation.coords.latitude,
+      longitude: currentLocation.coords.longitude,
+    };
+
+    return {
+      ...coords,
+      address: await fetchAddress(coords),
+    };
+  };
+
   const fetchGooglePlacesAutocomplete = async (
     input: string,
     target: "pickup" | "dropoff",
@@ -199,24 +223,18 @@ const Drop_n_Pickoff = () => {
   // Fetch initial location on load
   useEffect(() => {
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === "granted") {
-        try {
-          let currentLocation = await Location.getCurrentPositionAsync({});
-          const coords = {
-            latitude: currentLocation.coords.latitude,
-            longitude: currentLocation.coords.longitude,
-          };
-          const address = await fetchAddress(coords);
-          const initialLoc = { ...coords, address };
+      try {
+        const initialLoc = await getCurrentLocation();
+        if (initialLoc) {
+          const { address, ...coords } = initialLoc;
           isPickupSelectedRef.current = true;
           setPickupLocation(initialLoc);
           setPickupInput(address);
           setTempCoords(coords);
           setTempAddress(address);
-        } catch (error) {
-          console.log("Error getting initial location", error);
         }
+      } catch (error) {
+        console.log("Error getting initial location", error);
       }
     })();
   }, []);
@@ -324,7 +342,7 @@ const Drop_n_Pickoff = () => {
   };
 
   // Map Modal Handlers
-  const openMapPicker = (target: "pickup" | "dropoff") => {
+  const openMapPicker = async (target: "pickup" | "dropoff") => {
     let targetCoords = tempCoords;
     if (target === "pickup" && pickupLocation) {
       targetCoords = {
@@ -338,17 +356,24 @@ const Drop_n_Pickoff = () => {
         longitude: dropoffLocation.longitude,
       };
       setTempAddress(dropoffLocation.address);
+    } else {
+      try {
+        const currentLocation = await getCurrentLocation();
+        targetCoords = {
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+        };
+        setTempAddress(currentLocation.address);
+      } catch (error) {
+        Alert.alert(
+          "Location unavailable",
+          "Turn on location services and allow NorthRide to access your location before selecting a point on the map.",
+        );
+        return;
+      }
     }
     setTempCoords(targetCoords);
     setSelectingTarget(target);
-
-    setTimeout(() => {
-      mapRef.current?.animateToRegion({
-        ...targetCoords,
-        latitudeDelta: 0.015,
-        longitudeDelta: 0.015,
-      });
-    }, 300);
   };
 
   const handleRegionChangeComplete = async (region: Region) => {
@@ -687,6 +712,14 @@ const Drop_n_Pickoff = () => {
               customMapStyle={
                 Platform.OS === "android" ? greenMapStyle : undefined
               }
+              showsUserLocation
+              onMapReady={() => {
+                mapRef.current?.animateToRegion({
+                  ...tempCoords,
+                  latitudeDelta: 0.015,
+                  longitudeDelta: 0.015,
+                });
+              }}
               onRegionChangeComplete={handleRegionChangeComplete}
             />
             <View className="absolute top-1/2 left-1/2 -ml-4 -mt-8 pointer-events-none items-center justify-center z-10">

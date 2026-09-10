@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { useRef, useState } from "react";
 import {
   ActivityIndicator,
+  Alert,
   Image,
   KeyboardAvoidingView,
   NativeSyntheticEvent,
@@ -42,6 +43,7 @@ const Register = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [verifyError, setVerifyError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   // Array of refs for each OTP input field
   const inputRefs = useRef<Array<TextInput | null>>([]);
@@ -59,6 +61,8 @@ const Register = () => {
   });
 
   const handleRegister = async () => {
+    if (isRegistering) return;
+
     const newErrors = { emailOrPhone: "", password: "", confirmPassword: "" };
     let hasError = false;
 
@@ -96,8 +100,10 @@ const Register = () => {
     setErrors(newErrors);
 
     if (!hasError) {
-      axios
-        .post(
+      setIsRegistering(true);
+
+      try {
+        await axios.post(
           `${DEV ? "http://192.168.43.115:4000" : url}/api/users`,
           {
             email:
@@ -107,14 +113,28 @@ const Register = () => {
             passwordHash: data.password,
           },
           { withCredentials: true },
-        )
-        .then((res) => {
-          console.log(res);
-          setIsModalVisible(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+        );
+
+        setIsModalVisible(true);
+      } catch (err) {
+        let message = "Unable to create your account. Please try again.";
+
+        if (axios.isAxiosError(err)) {
+          if (!err.response) {
+            message =
+              "We could not connect to the server. Please check your network connection and try again.";
+          } else if (err.response.status === 409) {
+            message =
+              "An account with this email or phone number already exists.";
+          } else if (typeof err.response.data?.message === "string") {
+            message = err.response.data.message;
+          }
+        }
+
+        Alert.alert("Registration failed", message);
+      } finally {
+        setIsRegistering(false);
+      }
     }
   };
 
@@ -382,6 +402,8 @@ const Register = () => {
                     height: 50,
                   }}
                   onPress={handleRegister}
+                  disabled={isRegistering}
+                  loading={isRegistering}
                 >
                   <Text
                     style={{ fontFamily: "Inter_600SemiBold" }}

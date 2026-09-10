@@ -20,22 +20,22 @@ export default function HomeLayout() {
 
       <NativeTabs.Trigger name="activity">
         <NativeTabs.Trigger.Label>Activity</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="gear" md="browse_activity" />
+        <NativeTabs.Trigger.Icon sf="chart.bar.fill" md="browse_activity" />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="(menu)">
         <NativeTabs.Trigger.Label>Menu</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="gear" md="menu" />
+        <NativeTabs.Trigger.Icon sf="line.3.horizontal" md="menu" />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="profile">
         <NativeTabs.Trigger.Label>Profile</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="person" md="person" />
+        <NativeTabs.Trigger.Icon sf="person.fill" md="person" />
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="(settings)">
         <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf="gear" md="settings" />
+        <NativeTabs.Trigger.Icon sf="gearshape.fill" md="settings" />
       </NativeTabs.Trigger>
     </NativeTabs>
   );

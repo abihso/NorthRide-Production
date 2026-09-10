@@ -6,20 +6,20 @@ import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    Modal,
-    Platform,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  Modal,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { WebView, WebViewNavigation } from "react-native-webview";
 
-const url = process.env.EXPO_PUBLIC_BACKEND_URL;
+const url1 = process.env.EXPO_PUBLIC_BACKEND_URL;
 const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
 const GOOGLE_PLACES_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
@@ -65,7 +65,7 @@ const ConfirmRoute = () => {
     try {
       setIsSubmittingCashOrder(true);
       axios
-        .post(`${DEV ? "http://192.168.43.115:4000" : url}/api/deliveries`, {
+        .post(`${DEV ? "http://192.168.43.115:4000" : url1}/api/deliveries`, {
           senderId: await AsyncStorage.getItem("userId"),
           deliveryType: screenName,
           pickupAddress: pickup?.address,
@@ -105,7 +105,7 @@ const ConfirmRoute = () => {
 
       const amountInSubunits = Math.round(parseFloat(calculatedPrice) * 100);
       const response = await fetch(
-        `${DEV ? "http://192.168.43.115:4000" : url}/api/payments/initialize`,
+        `${DEV ? "http://192.168.43.115:4000" : url1}/api/payments/initialize`,
         {
           method: "POST",
           headers: {
@@ -153,8 +153,12 @@ const ConfirmRoute = () => {
       setShowPaystackModal(false);
       setPaystackUrl(null);
       if (paymentType === "payRightNow") {
+        console.log(
+          `${DEV ? "http://192.168.43.115:4000" : url1}/api/deliveries`,
+        );
+
         axios
-          .post(`${DEV ? "http://192.168.43.115:4000" : url}/api/deliveries`, {
+          .post(`${DEV ? "http://192.168.43.115:4000" : url1}/api/deliveries`, {
             senderId: await AsyncStorage.getItem("userId"),
             deliveryType: screenName,
             pickupAddress: pickup?.address,
@@ -177,11 +181,13 @@ const ConfirmRoute = () => {
           .then((res) => {
             console.log(res);
           })
-          .catch((err) => console.log(err));
+          .catch((err) =>
+            console.log(`err: ${err} : "could not create delivery"`),
+          );
       }
       if (paymentType === "payOnDelivery") {
         axios
-          .post(`${DEV ? "http://192.168.43.115:4000" : url}/api/deliveries`, {
+          .post(`${DEV ? "http://192.168.43.115:4000" : url1}/api/deliveries`, {
             senderId: await AsyncStorage.getItem("userId"),
             deliveryType: screenName,
             pickupAddress: pickup?.address,

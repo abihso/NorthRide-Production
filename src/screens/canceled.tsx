@@ -54,7 +54,7 @@ const Canceled = ({ userId, status, category }: CanceledProps) => {
                   >
                     <View className="flex-row items-center gap-5">
                       <Iconify
-                        icon="weui:location-outlined"
+                        icon="mdi:motorbike-off"
                         size={24}
                         color={"black"}
                       />
