@@ -129,7 +129,6 @@ export default function Index() {
   return (
     <SafeAreaView className="flex-1 items-center justify-center bg-[#070706]">
       <View className="flex-1 items-center">
-        {/* Image Slider Container */}
         <View className="h-4/5" style={{ width: width }}>
           <FlatList
             ref={flatListRef}
@@ -198,54 +197,52 @@ export default function Index() {
               <View className="-mt-2 -ml-2">
                 <Text
                   className="text-white text-lg"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   FAST
                 </Text>
                 <Text
                   className="text-white text-xs"
-                  style={{ fontFamily: "Inter_300Light" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Fast delivery to your door step
                 </Text>
                 <Text
                   className="text-white text-xs"
-                  style={{ fontFamily: "Inter_300Light" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   We deliver straight to your door — no missed packages, no
                   hassle.
                 </Text>
                 <Text
                   className="text-white text-xs"
-                  style={{ fontFamily: "Inter_300Light" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Speedy delivery. Right to you.
                 </Text>
               </View>
               <View>
-                {/* Animated Primary Button */}
                 <AnimatedButton
                   onPress={() => router.push("/(auth)")}
-                  className="bg-[#DCA501] -ml-2 w-[85%] h-10 items-center justify-center rounded-lg mt-10"
+                  className="bg-[#DCA501] -ml-2 w-[85%] h-12 items-center justify-center rounded-lg mt-5"
                 >
                   <Text
-                    className="text-white text-xs"
-                    style={{ fontFamily: "Inter_600SemiBold", fontSize: 12 }}
+                    className="text-white "
+                    style={{ fontFamily: "Inter_600SemiBold", fontSize: 15 }}
                   >
                     I already have an account
                   </Text>
                 </AnimatedButton>
 
-                {/* Animated Secondary Button */}
                 <AnimatedButton
                   onPress={() => {
                     router.push("/(auth)/register");
                   }}
-                  className="bg-[#FFFFFF] -ml-2 w-[85%] h-10 items-center justify-center rounded-lg mt-5"
+                  className="bg-[#FFFFFF] -ml-2 w-[85%] h-12 items-center justify-center rounded-lg mt-5"
                 >
                   <Text
-                    className="text-black text-xs"
-                    style={{ fontFamily: "Inter_600SemiBold", fontSize: 12 }}
+                    className="text-black"
+                    style={{ fontFamily: "Inter_600SemiBold", fontSize: 15 }}
                   >
                     Create a new Account
                   </Text>
@@ -254,33 +251,32 @@ export default function Index() {
 
               <View className="flex-row gap-3 mt-24 justify-center items-center -ml-20">
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 11 }}
                   className="text-white"
                 >
                   policies
                 </Text>
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 11 }}
                   className="text-white"
                 >
                   Supports
                 </Text>
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 11 }}
                   className="text-white"
                 >
                   Help center
                 </Text>
               </View>
 
-              {/* Animated Text Pressable */}
               <AnimatedButton
                 onPress={() => router.push("/(auth)")}
                 className="absolute top-56 z-50 right-24"
               >
                 <Text
                   className="text-white"
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
+                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 13 }}
                 >
                   Forget password?
                 </Text>

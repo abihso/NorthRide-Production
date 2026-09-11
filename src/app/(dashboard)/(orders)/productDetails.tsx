@@ -1,5 +1,5 @@
+import { UI } from "@/utils/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Input } from "@rneui/base";
 import * as Contacts from "expo-contacts/legacy";
 import { router, useLocalSearchParams } from "expo-router";
@@ -189,7 +189,7 @@ const ProductDeatils: React.FC = () => {
       pathname: "/(dashboard)/(orders)/comfirmroute",
       params: {
         screenName,
-        phone
+        phone,
       },
     });
   };
@@ -284,7 +284,10 @@ const ProductDeatils: React.FC = () => {
         <View className="mt-5 rounded-3xl bg-light-gray1 p-5 flex gap-2">
           {/* Name Input */}
           <Input
-            style={{ fontFamily: "Inter_300Light" }}
+            style={{
+              fontFamily: "Inter_300Light",
+              fontSize: UI.inputFontSize,
+            }}
             placeholder="Name"
             value={name}
             onChangeText={(text) => {
@@ -339,11 +342,11 @@ const ProductDeatils: React.FC = () => {
                   borderRadius: 20,
                   paddingHorizontal: 12,
                   backgroundColor: "#F5F5F5",
-                  height: 50,
+                  minHeight: UI.inputHeight,
                 }}
                 inputStyle={{
                   fontFamily: "Inter_600SemiBold",
-                  fontSize: 14,
+                  fontSize: UI.inputFontSize,
                 }}
                 placeholder="Phone number"
                 keyboardType="phone-pad"
@@ -438,7 +441,7 @@ const ProductDeatils: React.FC = () => {
       <View className="pt-2 pb-1 bg-white">
         <Button
           radius={"xl"}
-          buttonStyle={{ backgroundColor: "black", height: 50 }}
+          buttonStyle={{ backgroundColor: "black", height: UI.buttonHeight }}
           onPress={handleContinue}
         >
           <Text

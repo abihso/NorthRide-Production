@@ -61,7 +61,7 @@ const Canceled = ({ userId, status, category }: CanceledProps) => {
                       <View>
                         <Text
                           style={{ fontFamily: "Inter_600SemiBold" }}
-                          className="text-light-black1 text-xs"
+                          className="text-light-black1 text-sm"
                         >
                           Yesterday
                         </Text>
@@ -73,7 +73,7 @@ const Canceled = ({ userId, status, category }: CanceledProps) => {
                         </Text>
                         <Text
                           style={{ fontFamily: "Inter_600SemiBold" }}
-                          className="text-light-black1 text-xs"
+                          className="text-light-black1 text-sm"
                         >
                           11km ride
                         </Text>
@@ -82,7 +82,7 @@ const Canceled = ({ userId, status, category }: CanceledProps) => {
                     <View className="justify-end">
                       <Text
                         style={{ fontFamily: "Inter_600SemiBold" }}
-                        className="text-light-black1 text-xs"
+                        className="text-light-black1 text-sm"
                       >
                         GH₵ 20.00
                       </Text>

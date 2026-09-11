@@ -1,5 +1,6 @@
 import type { LocationData, PaymentOption } from "@/types/types";
 import { decodePolyline, greenMapStyle } from "@/utils";
+import { UI } from "@/utils/ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "@rneui/base";
 import { router, useLocalSearchParams } from "expo-router";
@@ -40,7 +41,6 @@ const CalculatePrice = () => {
   const [calculatedPrice, setCalculatedPrice] = useState<string>("0.00");
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Payment Selection
   const [paymentMethod, setPaymentMethod] = useState<string>("cash");
   const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
@@ -80,7 +80,6 @@ const CalculatePrice = () => {
         setPickup(parsedPickup);
         setDropoff(parsedDropoff);
 
-        // Fetch Directions Route from Google Maps API
         const directionsUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${parsedPickup.latitude},${parsedPickup.longitude}&destination=${parsedDropoff.latitude},${parsedDropoff.longitude}&key=${GOOGLE_PLACES_API_KEY}`;
 
         const response = await fetch(directionsUrl);
@@ -90,7 +89,6 @@ const CalculatePrice = () => {
           const route = data.routes[0];
           const leg = route.legs[0];
 
-          // Extract Distance & Duration
           const distInMeters = leg.distance.value;
           const distInKm = distInMeters / 1000;
           const durInMinutes = Math.ceil(leg.duration.value / 60);
@@ -98,17 +96,14 @@ const CalculatePrice = () => {
           setDistanceKm(distInKm);
           setDurationMin(durInMinutes);
 
-          // Dynamic Price Formula: Base Fare (5 GH₵) + Distance Fare (2.50 GH₵/km)
           const baseFare = 5;
           const ratePerKm = 2.5;
           const totalPrice = (baseFare + distInKm * ratePerKm).toFixed(2);
           setCalculatedPrice(totalPrice);
 
-          // Decode Polyline
           const decodedCoords = decodePolyline(route.overview_polyline.points);
           setRouteCoordinates(decodedCoords);
 
-          // Fit Map View to markers
           setTimeout(() => {
             mapRef.current?.fitToCoordinates(
               [
@@ -149,7 +144,6 @@ const CalculatePrice = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* MAP VIEW WITH POLYLINE */}
       <View className="h-[400px]">
         {pickup && dropoff ? (
           <MapView
@@ -166,7 +160,6 @@ const CalculatePrice = () => {
               Platform.OS === "android" ? greenMapStyle : undefined
             }
           >
-            {/* Pickup Marker */}
             <Marker
               coordinate={{
                 latitude: pickup.latitude,
@@ -219,7 +212,7 @@ const CalculatePrice = () => {
               </Text>
               <Text
                 className="text-[9px] text-light-black2"
-                style={{ fontFamily: "Inter_300Light" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 Pickup Location
@@ -250,7 +243,7 @@ const CalculatePrice = () => {
               </Text>
               <Text
                 className="text-[9px] text-light-black2"
-                style={{ fontFamily: "Inter_300Light" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 {distanceKm
@@ -303,7 +296,6 @@ const CalculatePrice = () => {
             </Text>
           </View>
 
-          {/* PAYMENT METHOD SELECTOR */}
           <Pressable
             onPress={() => setIsPickerVisible(true)}
             className="bg-white rounded-2xl border border-gray-200 mt-4 px-4 py-3 flex-row justify-between items-center"
@@ -317,7 +309,6 @@ const CalculatePrice = () => {
             <Text className="text-xs text-black">▼</Text>
           </Pressable>
 
-          {/* PAYMENT METHOD DROPDOWN MODAL */}
           <Modal visible={isPickerVisible} transparent animationType="fade">
             <Pressable
               className="flex-1 bg-black/40 justify-center px-6"
@@ -359,7 +350,7 @@ const CalculatePrice = () => {
             buttonStyle={{
               backgroundColor: "black",
               marginTop: 15,
-              height: 50,
+              height: UI.buttonHeight,
             }}
           >
             <Text

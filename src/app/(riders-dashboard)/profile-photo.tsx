@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
 import { Text, View } from "react-native";
@@ -65,7 +66,7 @@ const ProfilePhoto = () => {
         <Button
           radius={20}
           buttonStyle={{
-            height: 50,
+            height: UI.buttonHeight,
             backgroundColor: "black",
             display: "flex",
             justifyContent: "center",
@@ -78,7 +79,7 @@ const ProfilePhoto = () => {
             style={{ fontFamily: "Inter_400Regular" }}
             className="text-light-pink text-xl"
           >
-            Take Photo 
+            Take Photo
           </Text>
           {/* <Iconify icon="akar-icons:arrow-right" size={24} color={"#FDBF07"} /> */}
         </Button>

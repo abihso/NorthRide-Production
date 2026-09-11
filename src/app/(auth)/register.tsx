@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Button, Input } from "@rneui/themed";
 import axios from "axios";
@@ -311,7 +312,10 @@ const Register = () => {
 
               {/* Dynamic Input (Email / Phone) */}
               <Input
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{
+                  fontFamily: "Inter_400Regular",
+                  fontSize: UI.inputFontSize,
+                }}
                 placeholder={activeTab === "email" ? "Email" : "Phone Number"}
                 keyboardType={
                   activeTab === "email" ? "email-address" : "phone-pad"
@@ -325,12 +329,16 @@ const Register = () => {
                   borderRadius: 20,
                   paddingHorizontal: 10,
                   marginLeft: -15,
+                  minHeight: UI.inputHeight,
                 }}
               />
 
               {/* Password Input */}
               <Input
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{
+                  fontFamily: "Inter_400Regular",
+                  fontSize: UI.inputFontSize,
+                }}
                 placeholder="Password"
                 secureTextEntry={!isPasswordVisible}
                 value={data.password}
@@ -355,12 +363,16 @@ const Register = () => {
                   borderRadius: 20,
                   paddingHorizontal: 10,
                   marginLeft: -15,
+                  minHeight: UI.inputHeight,
                 }}
               />
 
               {/* Confirm Password Input */}
               <Input
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{
+                  fontFamily: "Inter_400Regular",
+                  fontSize: UI.inputFontSize,
+                }}
                 placeholder="Confirm Password"
                 secureTextEntry={!isConfirmPasswordVisible}
                 value={data.confirmPassword}
@@ -391,6 +403,7 @@ const Register = () => {
                   borderRadius: 20,
                   paddingHorizontal: 10,
                   marginLeft: -15,
+                  minHeight: UI.inputHeight,
                 }}
               />
 
@@ -399,7 +412,7 @@ const Register = () => {
                   radius={"xl"}
                   color={"black"}
                   buttonStyle={{
-                    height: 50,
+                    height: UI.buttonHeight,
                   }}
                   onPress={handleRegister}
                   disabled={isRegistering}

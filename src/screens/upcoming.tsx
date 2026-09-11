@@ -136,7 +136,7 @@ const Upcoming = () => {
           <View className="pl-5 py-2">
             <Text
               style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-light-black2 text-xs"
+              className="text-light-black2 text-sm"
             >
               21st July, 2026
             </Text>
@@ -148,7 +148,7 @@ const Upcoming = () => {
             </Text>
             <Text
               style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-light-black1 text-xs  "
+              className="text-light-black1 text-sm  "
             >
               GH₵ 20.00
             </Text>
@@ -157,7 +157,7 @@ const Upcoming = () => {
           <View className="pr-5 py-2">
             <Text
               style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-light-black2 text-xs"
+              className="text-light-black2 text-sm"
             >
               Rider’s Name
             </Text>
@@ -169,7 +169,7 @@ const Upcoming = () => {
             </Text>
             <Text
               style={{ fontFamily: "Inter_600SemiBold" }}
-              className="text-light-black1 text-xs  "
+              className="text-light-black1 text-sm  "
             >
               AS 214-26
             </Text>
@@ -214,7 +214,7 @@ const Upcoming = () => {
         Cancel Upcoming ride policy
       </Text>
       <View className="h-44 rounded-3xl bg-light-gray1 mt-4 p-5">
-        <Text className=" text-xs" style={{ fontFamily: "Inter_300Light" }}>
+        <Text className=" text-sm" style={{ fontFamily: "Inter_300Light" }}>
           NorthRides balance is not available with this payment method
         </Text>
       </View>

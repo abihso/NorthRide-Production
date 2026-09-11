@@ -1,18 +1,19 @@
+import { UI } from "@/utils/ui";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  FlatList,
-  Image,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
+    FlatList,
+    Image,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View,
 } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -90,7 +91,10 @@ const EarnWithNorthRide = () => {
                 className="h-16 bg-light-gray1 rounded-3xl mt-2 flex-row justify-between items-center px-5"
               >
                 <Text
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{
+                    fontFamily: "Inter_400Regular",
+                    fontSize: UI.inputFontSize,
+                  }}
                   className="text-lg text-black"
                 >
                   {selectedCity}
@@ -140,7 +144,7 @@ const EarnWithNorthRide = () => {
                 radius={20}
                 className="h-34"
                 buttonStyle={{
-                  height: 50,
+                  height: UI.buttonHeight,
                   backgroundColor: "black",
                   display: "flex",
                   gap: 3,

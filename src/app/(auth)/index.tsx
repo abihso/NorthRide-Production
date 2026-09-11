@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button, Input } from "@rneui/themed";
@@ -161,7 +162,7 @@ const Login = () => {
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            padding: 28,
+            padding: 20,
             justifyContent: "space-between",
           }}
           showsVerticalScrollIndicator={false}
@@ -169,8 +170,7 @@ const Login = () => {
           automaticallyAdjustKeyboardInsets={true}
         >
           <View>
-            {/* Tab Switcher Header */}
-            <View className="h-16 px-1.5 bg-[#F1F1F1] rounded-3xl flex justify-between items-center flex-row">
+            <View className="h-16 px-2 bg-[#F1F1F1] rounded-3xl flex justify-between items-center flex-row">
               <Pressable
                 onPress={() => handleTabChange("email")}
                 className={`w-2/4 py-3 rounded-3xl ${
@@ -182,7 +182,7 @@ const Login = () => {
                   className={`text-center ${
                     activeTab === "email" ? "text-black" : "text-gray-500"
                   }`}
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Email
                 </Text>
@@ -199,7 +199,7 @@ const Login = () => {
                   className={`text-center ${
                     activeTab === "phone" ? "text-black" : "text-gray-500"
                   }`}
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Phone
                 </Text>
@@ -222,21 +222,24 @@ const Login = () => {
               </Text>
               <Text
                 className="text-[#01032D] mt-4 shadow-slate-400"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 Enter your {activeTab === "email" ? "email" : "phone number"}{" "}
                 and
               </Text>
               <Text
                 className="text-[#01032D] shadow-slate-400 mb-4"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 password to login
               </Text>
 
               {/* Dynamic Input (Email / Phone) */}
               <Input
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{
+                  fontFamily: "Inter_600SemiBold",
+                  fontSize: UI.inputFontSize,
+                }}
                 placeholder={activeTab === "email" ? "Email" : "Phone Number"}
                 keyboardType={
                   activeTab === "email" ? "email-address" : "phone-pad"
@@ -250,12 +253,15 @@ const Login = () => {
                   borderRadius: 20,
                   paddingHorizontal: 10,
                   marginLeft: -15,
+                  minHeight: UI.inputHeight,
                 }}
               />
 
-              {/* Password Input */}
               <Input
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{
+                  fontFamily: "Inter_600SemiBold",
+                  fontSize: UI.inputFontSize,
+                }}
                 placeholder="Password"
                 secureTextEntry={!isPasswordVisible}
                 value={data.password}
@@ -280,6 +286,7 @@ const Login = () => {
                   borderRadius: 20,
                   paddingHorizontal: 10,
                   marginLeft: -15,
+                  minHeight: UI.inputHeight,
                 }}
               />
 
@@ -295,7 +302,7 @@ const Login = () => {
                   radius={"xl"}
                   color={"black"}
                   buttonStyle={{
-                    height: 50,
+                    height: UI.buttonHeight,
                   }}
                   onPress={handleLogin}
                   disabled={isLoading}
@@ -321,7 +328,7 @@ const Login = () => {
                 <View className="border-b border-[#A9A9A9] w-2/6" />
               </View>
 
-              <View className="flex flex-row justify-between mt-10">
+              <View className="flex flex-row justify-between gap-1 mt-10">
                 <Pressable className="flex-row items-center gap-2 py-2 px-5 border border-[#E0E0E0] w-3/6 rounded-3xl">
                   <Image
                     className="w-10 h-10"
@@ -343,7 +350,6 @@ const Login = () => {
             </View>
           </View>
 
-          {/* Bottom Area */}
           <View className="relative mt-12 pb-4">
             <View className="flex-row gap-3 justify-center items-center z-10 relative">
               <Text

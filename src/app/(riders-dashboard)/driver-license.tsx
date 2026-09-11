@@ -1,7 +1,7 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { UI } from "@/utils/ui";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
-import { Text, View, Image } from "react-native";
+import { Text, View } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -76,7 +76,7 @@ const DriversLicense = () => {
         <Button
           radius={20}
           buttonStyle={{
-            height: 50,
+            height: UI.buttonHeight,
             backgroundColor: "black",
             display: "flex",
             justifyContent: "center",

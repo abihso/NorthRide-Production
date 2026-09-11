@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -95,7 +96,7 @@ const JoinAs = () => {
         <Button
           radius={20}
           buttonStyle={{
-            height: 50,
+            height: UI.buttonHeight,
             backgroundColor: "black",
             display: "flex",
             justifyContent: "center",

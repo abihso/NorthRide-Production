@@ -6,9 +6,7 @@ import Iconify from "react-native-iconify/native";
 const url = process.env.EXPO_PUBLIC_BACKEND_URL;
 const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
 
-// 1. Define types for your API response structure
 interface Delivery {
-  // Add properties matching your actual delivery object here if needed
   [key: string]: any; 
 }
 
@@ -24,11 +22,10 @@ interface PastProps {
 }
 
 const Past = ({ userId, status, category }: PastProps) => {
-  // 2. Initialize state as an empty array with explicit typing
   const [data, setData] = useState<DeliveryGroup[]>([]);
 
   useEffect(() => {
-    if (!userId) return; // Prevent fetching if userId is null
+    if (!userId) return;
 
     axios
       .get(
@@ -36,7 +33,7 @@ const Past = ({ userId, status, category }: PastProps) => {
       )
       .then((res) => setData(res.data.data))
       .catch((err) => console.log(err));
-  }, [userId, status, category]); // Added dependencies
+  }, [userId, status, category]);
 
   return (
     <ScrollView className="px-7 py-10 bg-white">
@@ -62,7 +59,7 @@ const Past = ({ userId, status, category }: PastProps) => {
                       <View>
                         <Text
                           style={{ fontFamily: "Inter_600SemiBold" }}
-                          className="text-light-black1 text-xs"
+                          className="text-light-black1 text-sm"
                         >
                           Yesterday
                         </Text>
@@ -74,7 +71,7 @@ const Past = ({ userId, status, category }: PastProps) => {
                         </Text>
                         <Text
                           style={{ fontFamily: "Inter_600SemiBold" }}
-                          className="text-light-black1 text-xs"
+                          className="text-light-black1 text-sm"
                         >
                           11km ride
                         </Text>
@@ -83,7 +80,7 @@ const Past = ({ userId, status, category }: PastProps) => {
                     <View className="justify-end">
                       <Text
                         style={{ fontFamily: "Inter_600SemiBold" }}
-                        className="text-light-black1 text-xs"
+                        className="text-light-black1 text-sm"
                       >
                         GH₵ 20.00
                       </Text>

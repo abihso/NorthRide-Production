@@ -1,5 +1,6 @@
 import type { LocationData } from "@/types/types";
 import { decodePolyline, greenMapStyle } from "@/utils";
+import { UI } from "@/utils/ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Button } from "@rneui/base";
 import axios from "axios";
@@ -369,7 +370,7 @@ const ConfirmRoute = () => {
               </Text>
               <Text
                 className="text-[10px]"
-                style={{ fontFamily: "Inter_300Light" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 Motorcycle Ride
@@ -380,7 +381,7 @@ const ConfirmRoute = () => {
           <View className="items-end">
             <Text
               className="text-[10px]"
-              style={{ fontFamily: "Inter_300Light" }}
+              style={{ fontFamily: "Inter_600SemiBold" }}
               numberOfLines={1}
             >
               {durationMin ? `${durationMin} min ride` : "Calculating..."}
@@ -397,11 +398,15 @@ const ConfirmRoute = () => {
 
         <Button
           radius={"xl"}
-          buttonStyle={{ backgroundColor: "black", marginTop: 25, height: 50 }}
+          buttonStyle={{
+            backgroundColor: "black",
+            marginTop: 25,
+            height: UI.buttonHeight,
+          }}
           onPress={handleSubmit}
         >
           <Text
-            className="text-xl text-light-pink"
+            className="text-2xl text-light-pink"
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
@@ -479,7 +484,7 @@ const ConfirmRoute = () => {
               containerStyle={{
                 borderRadius: 30,
                 marginTop: 40,
-                height: 50,
+                height: UI.buttonHeight,
                 justifyContent: "center",
                 // Drop shadow props
                 shadowColor: "#000",
@@ -507,7 +512,7 @@ const ConfirmRoute = () => {
               containerStyle={{
                 borderRadius: 30,
                 marginTop: 20,
-                height: 50,
+                height: UI.buttonHeight,
                 justifyContent: "center",
                 // Drop shadow props
                 shadowColor: "#000",

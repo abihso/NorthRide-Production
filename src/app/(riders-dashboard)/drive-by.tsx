@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
 import { Image, Text, View } from "react-native";
@@ -153,7 +154,7 @@ const DriveBy = () => {
           onPress={() => router.push("/(riders-dashboard)/join-as")}
           radius={20}
           buttonStyle={{
-            height: 50,
+            height: UI.buttonHeight,
             backgroundColor: "black",
             display: "flex",
             justifyContent: "center",

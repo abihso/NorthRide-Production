@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
@@ -9,7 +10,7 @@ const PaymentMethod = () => {
       <Text className="text-2xl" style={{ fontFamily: "Inter_600SemiBold" }}>
         How would you like to pay?
       </Text>
-      <Text className="text-sm mt-1" style={{ fontFamily: "Inter_400Regular" }}>
+      <Text className="text-sm mt-1" style={{ fontFamily: "Inter_600SemiBold" }}>
         Select a preferred payment method
       </Text>
       <View className="min-h-72 bg-[#F2F2F2] rounded-3xl px-4 py-6 mt-10">
@@ -22,7 +23,7 @@ const PaymentMethod = () => {
               />
               <Text
                 className="mt-1 text-lg"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 Apple pay
               </Text>
@@ -44,7 +45,7 @@ const PaymentMethod = () => {
               />
               <Text
                 className="mt-1 text-lg"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 AirtelTigo money
               </Text>
@@ -66,7 +67,7 @@ const PaymentMethod = () => {
               />
               <Text
                 className="mt-1 text-lg"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 MTN Mobile money
               </Text>
@@ -88,7 +89,7 @@ const PaymentMethod = () => {
               />
               <Text
                 className="mt-1 text-lg"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 Telecel Cash
               </Text>
@@ -110,7 +111,7 @@ const PaymentMethod = () => {
               />
               <Text
                 className="mt-1 text-lg"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 Cash
               </Text>
@@ -130,7 +131,7 @@ const PaymentMethod = () => {
           className=""
           buttonStyle={{
             width: 300,
-            height: 45,
+            height: UI.buttonHeight,
             display: "flex",
             position: "relative",
           }}
@@ -139,9 +140,9 @@ const PaymentMethod = () => {
         >
           <Text
             className="text-[#FFC100] text-lg "
-            style={{ fontFamily: "Inter_300Light" }}
+            style={{ fontFamily: "Inter_600SemiBold" }}
           >
-           Set Up Later
+            Set Up Later
           </Text>
           <FontAwesome
             name="arrow-right"

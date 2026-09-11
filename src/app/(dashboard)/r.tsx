@@ -1,20 +1,20 @@
 // import PastRide from "@/components/pastRide";
+import { UI } from "@/utils/ui";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Location from "expo-location";
-import { router } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
+    ActivityIndicator,
+    Alert,
+    Modal,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import MapView, { Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -251,7 +251,7 @@ const ReciveParcels = () => {
     }
     return `${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)}`;
   };
-  
+
   const fetchGooglePlacesAutocomplete = async (
     input: string,
     target: "pickup" | "dropoff",
@@ -260,7 +260,7 @@ const ReciveParcels = () => {
     if (target === "pickup") setIsSearchingPickup(true);
     else setIsSearchingDropoff(true);
 
-   try {
+    try {
       const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
         input,
       )}&key=${GOOGLE_PLACES_API_KEY}`;
@@ -428,7 +428,7 @@ const ReciveParcels = () => {
       );
       console.log("Locations successfully saved to storage!");
       // Proceed to next route
-    //   router.push("/(receiveparcel)/confirmReceiveRoute");
+      //   router.push("/(receiveparcel)/confirmReceiveRoute");
     } catch (error) {
       console.error("Failed to save locations to storage:", error);
     }
@@ -528,14 +528,17 @@ const ReciveParcels = () => {
                   style={{ position: "absolute", left: 12, zIndex: 10 }}
                 />
                 <TextInput
-                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  style={{
+                    fontFamily: "Inter_600SemiBold",
+                    fontSize: UI.inputFontSize,
+                  }}
                   value={pickupInput}
                   onChangeText={(text) => {
                     isPickupSelectedRef.current = false;
                     setPickupInput(text);
                   }}
                   placeholder="Search pickup location or type place..."
-                  className="rounded-3xl py-3 pl-10 pr-4 bg-[#F2F2F2] text-gray-800 text-sm"
+                  className="rounded-3xl py-3 pl-10 pr-4 bg-[#F2F2F2] text-gray-800 text-base"
                 />
               </View>
               <View className="w-[10%] flex-row justify-center mt-4">
@@ -557,7 +560,10 @@ const ReciveParcels = () => {
                 <Feather name="send" size={18} color="#000000" />
                 <Text
                   className="text-sm"
-                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  style={{
+                    fontFamily: "Inter_600SemiBold",
+                    fontSize: UI.inputFontSize,
+                  }}
                 >
                   Current Location
                 </Text>
@@ -609,7 +615,7 @@ const ReciveParcels = () => {
                     setDropoffInput(text);
                   }}
                   placeholder="Search dropoff location or type place..."
-                  className="rounded-3xl py-3 pl-10 pr-4 bg-[#F2F2F2] text-gray-800 text-sm"
+                  className="rounded-3xl py-3 pl-10 pr-4 bg-[#F2F2F2] text-gray-800 text-base"
                 />
               </View>
               <View className="w-[10%] flex-row justify-center mt-4">
@@ -661,12 +667,12 @@ const ReciveParcels = () => {
                 style={{ fontFamily: "Inter_400Regular" }}
               >
                 Continue
-              </Text> 
+              </Text>
             </Pressable>
           </View>
         </View>
       ) : screen === "past" ? (
-        // <PastRide /> 
+        // <PastRide />
         ""
       ) : (
         ""

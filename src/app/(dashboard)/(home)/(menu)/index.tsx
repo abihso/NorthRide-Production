@@ -30,14 +30,14 @@ const Menu = () => {
             <View>
               <Text
                 className="text-xs"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 Get 50% discount on your first 3 rides
               </Text>
               <Text
                 className="text-xs"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 View details
@@ -47,7 +47,7 @@ const Menu = () => {
           <FontAwesome name="close" size={15} />
         </View>
         <Text
-          className="text-2xl mt-5"
+          className="text-3xl mt-5"
           style={{ fontFamily: "Inter_600SemiBold" }}
           numberOfLines={1}
         >
@@ -70,7 +70,7 @@ const Menu = () => {
             </View>
             <View>
               <Text
-                className="text-2xl "
+                className="text-3xl "
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
@@ -87,7 +87,7 @@ const Menu = () => {
           </View>
         </Pressable>
         <Text
-          className="text-2xl mt-5"
+          className="text-3xl mt-5"
           style={{ fontFamily: "Inter_600SemiBold" }}
           numberOfLines={1}
         >
@@ -112,7 +112,7 @@ const Menu = () => {
               </View>
               <View>
                 <Text
-                  className="text-2xl "
+                  className="text-3xl "
                   style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
@@ -144,7 +144,7 @@ const Menu = () => {
               </View>
               <View>
                 <Text
-                  className="text-2xl "
+                  className="text-3xl "
                   style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
@@ -163,7 +163,7 @@ const Menu = () => {
         </View>
 
         <Text
-          className="text-2xl mt-5"
+          className="text-3xl mt-5"
           style={{ fontFamily: "Inter_600SemiBold" }}
           numberOfLines={1}
         >
@@ -179,7 +179,7 @@ const Menu = () => {
             </View>
             <View>
               <Text
-                className="text-2xl "
+                className="text-3xl "
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
@@ -204,7 +204,7 @@ const Menu = () => {
             </View>
             <View>
               <Text
-                className="text-2xl "
+                className="text-3xl "
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
@@ -229,7 +229,7 @@ const Menu = () => {
             </View>
             <View>
               <Text
-                className="text-2xl "
+                className="text-3xl "
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >

@@ -1,13 +1,14 @@
+import { UI } from "@/utils/ui";
 import { Button } from "@rneui/base";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Modal,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
+    Modal,
+    Pressable,
+    ScrollView,
+    Text,
+    TextInput,
+    View,
 } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -54,7 +55,10 @@ const PaymentDetails = () => {
           </Text>
           <Text
             className="py-2 bg-light-gray1 px-4 rounded-2xl"
-            style={{ fontFamily: "Inter_600SemiBold" }}
+            style={{
+              fontFamily: "Inter_600SemiBold",
+              fontSize: UI.inputFontSize,
+            }}
           >
             Help
           </Text>
@@ -120,7 +124,10 @@ const PaymentDetails = () => {
           className="h-14 rounded-3xl mt-2 border border-light-gray5 bg-light-gray1 flex-row items-center justify-between px-4"
         >
           <Text
-            style={{ fontFamily: "Inter_600SemiBold" }}
+            style={{
+              fontFamily: "Inter_600SemiBold",
+              fontSize: UI.inputFontSize,
+            }}
             className={`text-base ${
               billingType ? "text-black" : "text-gray-400"
             }`}
@@ -136,7 +143,10 @@ const PaymentDetails = () => {
             Account holder name
           </Text>
           <Text
-            style={{ fontFamily: "Inter_600SemiBold" }}
+            style={{
+              fontFamily: "Inter_600SemiBold",
+              fontSize: UI.inputFontSize,
+            }}
             className="text-xs text-gray-500"
           >
             (person or company) <Text className="text-red-500">*</Text>
@@ -233,7 +243,7 @@ const PaymentDetails = () => {
         <Button
           radius={20}
           buttonStyle={{
-            height: 50,
+            height: UI.buttonHeight,
             backgroundColor: "black",
             display: "flex",
             justifyContent: "center",

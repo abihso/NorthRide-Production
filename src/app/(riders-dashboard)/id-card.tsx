@@ -1,3 +1,4 @@
+import { UI } from "@/utils/ui";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "@rneui/base";
 import { router } from "expo-router";
@@ -137,7 +138,7 @@ const IdCard = () => {
         <Button
           radius={20}
           buttonStyle={{
-            height: 50,
+            height: UI.buttonHeight,
             backgroundColor: "black",
             display: "flex",
             justifyContent: "center",

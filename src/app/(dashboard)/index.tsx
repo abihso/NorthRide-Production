@@ -19,11 +19,11 @@ const Dashboard = () => {
         </Text>
         <Text
           className="text-base mt-3 text-[#333333]"
-          style={{ fontFamily: "Inter_400Regular" }}
+          style={{ fontFamily: "Inter_600SemiBold" }}
         >
           Safety and respect for all
         </Text>
-        <Text className="text-xs" style={{ fontFamily: "Inter_300Light" }}>
+        <Text className="text-xs" style={{ fontFamily: "Inter_600SemiBold" }}>
           We’re committed along with multiple riders and delivery guys to:
         </Text>
         <View className="flex-row  items-center gap-2 mt-7">
@@ -35,7 +35,7 @@ const Dashboard = () => {
           <View className="border-b w-full pb-5 border-[#EAEAEA]">
             <Text
               className="text-xs text-[#333333]"
-              style={{ fontFamily: "Inter_400Regular" }}
+              style={{ fontFamily: "Inter_600SemiBold" }}
             >
               Treat everyone with kindness and respect
             </Text>
@@ -50,7 +50,7 @@ const Dashboard = () => {
           <View className="border-b w-full pb-5 border-[#EAEAEA]">
             <Text
               className="text-xs text-[#333333]"
-              style={{ fontFamily: "Inter_400Regular" }}
+              style={{ fontFamily: "Inter_600SemiBold" }}
             >
               Help keep each other safe
             </Text>
@@ -65,7 +65,7 @@ const Dashboard = () => {
           <View className="border-b w-full pb-5 border-[#EAEAEA]">
             <Text
               className="text-xs text-[#333333]"
-              style={{ fontFamily: "Inter_400Regular" }}
+              style={{ fontFamily: "Inter_600SemiBold" }}
             >
               Follow the law
             </Text>
@@ -73,14 +73,14 @@ const Dashboard = () => {
         </View>
         <Text
           className="text-xs mt-10"
-          style={{ fontFamily: "Inter_300Light" }}
+          style={{ fontFamily: "Inter_600SemiBold" }}
         >
           Everyone who uses NorthRide app is expected to
         </Text>
-        <Text className="text-xs" style={{ fontFamily: "Inter_300Light" }}>
+        <Text className="text-xs" style={{ fontFamily: "Inter_600SemiBold" }}>
           follow these guidlines.
         </Text>
-        <Text className="text-xs mt-5" style={{ fontFamily: "Inter_300Light" }}>
+        <Text className="text-xs mt-5" style={{ fontFamily: "Inter_600SemiBold" }}>
           You can read about our Community Guidelines HERE
         </Text>
       </View>
@@ -92,7 +92,7 @@ const Dashboard = () => {
             position : "relative"
 
         }} color={"black"} radius={"xl"} >
-            <Text className="text-[#FFC100] text-lg " style={{ fontFamily: "Inter_300Light" }}>
+            <Text className="text-[#FFC100] text-lg " style={{ fontFamily: "Inter_600SemiBold" }}>
                 I understand
             </Text>
               <FontAwesome

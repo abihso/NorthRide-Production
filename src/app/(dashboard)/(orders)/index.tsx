@@ -87,15 +87,12 @@ const Drop_n_Pickoff = () => {
     null,
   );
 
-  // Search Inputs State
   const [pickupInput, setPickupInput] = useState<string>("");
   const [dropoffInput, setDropoffInput] = useState<string>("");
 
-  // Refs to prevent recursive re-searches on option selection
   const isPickupSelectedRef = useRef(false);
   const isDropoffSelectedRef = useRef(false);
 
-  // Suggestions & Loading States
   const [pickupSuggestions, setPickupSuggestions] = useState<LocationData[]>(
     [],
   );
@@ -113,13 +110,12 @@ const Drop_n_Pickoff = () => {
     latitude: number;
     longitude: number;
   }>({
-    latitude: 5.6037, // Default coordinates
+    latitude: 5.6037, 
     longitude: -0.187,
   });
   const [tempAddress, setTempAddress] = useState<string>("Loading location...");
   const [isGeocoding, setIsGeocoding] = useState<boolean>(false);
 
-  // Reverse Geocoding Helper
   const fetchAddress = async (coords: {
     latitude: number;
     longitude: number;
@@ -220,7 +216,6 @@ const Drop_n_Pickoff = () => {
     })();
   }, []);
 
-  // Fetch initial location on load
   useEffect(() => {
     (async () => {
       try {
@@ -261,7 +256,6 @@ const Drop_n_Pickoff = () => {
     };
   }, [pickupInput]);
 
-  // Debounced Dropoff Search
   useEffect(() => {
     let active = true;
     if (!dropoffInput.trim()) {
@@ -283,7 +277,6 @@ const Drop_n_Pickoff = () => {
     };
   }, [dropoffInput]);
 
-  // Selection Handlers
   const selectSuggestion = (
     item: LocationData,
     target: "pickup" | "dropoff",
@@ -341,7 +334,6 @@ const Drop_n_Pickoff = () => {
     setDropoffInput(tempText);
   };
 
-  // Map Modal Handlers
   const openMapPicker = async (target: "pickup" | "dropoff") => {
     let targetCoords = tempCoords;
     if (target === "pickup" && pickupLocation) {
@@ -448,7 +440,7 @@ const Drop_n_Pickoff = () => {
             <FontAwesome name="close" size={20} />
           </Pressable>
           <Text
-            className="text-xl"
+            className="text-3xl"
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
@@ -485,9 +477,8 @@ const Drop_n_Pickoff = () => {
 
       {screen === "book" ? (
         <ScrollView className="px-7 py-3" keyboardShouldPersistTaps="handled">
-          {/* PICKUP LOCATION SECTION */}
           <Text
-            className="text-xl mt-5"
+            className="text-3xl mt-5"
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
@@ -561,7 +552,6 @@ const Drop_n_Pickoff = () => {
             </Pressable>
           </View>
 
-          {/* SWAP BUTTON */}
           <View className="flex-row justify-end items-center mt-5">
             <Pressable onPress={handleSwapLocations}>
               <Iconify
@@ -572,9 +562,8 @@ const Drop_n_Pickoff = () => {
             </Pressable>
           </View>
 
-          {/* DROPOFF LOCATION SECTION */}
           <Text
-            className="text-xl"
+            className="text-3xl"
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
@@ -648,13 +637,12 @@ const Drop_n_Pickoff = () => {
             </Pressable>
           </View>
 
-          {/* SUBMIT BUTTON */}
           <Pressable
             onPress={handleSubmit}
             className="py-4 my-5 bg-black rounded-3xl"
           >
             <Text
-              className="text-[#FDBF07] text-center"
+              className="text-[#FDBF07] text-center text-xl"
               style={{ fontFamily: "Inter_600SemiBold" }}
             >
               Continue

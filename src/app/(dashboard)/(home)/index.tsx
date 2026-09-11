@@ -14,7 +14,6 @@ const Home = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      {/* Top Fixed Header */}
       <View className="h-14 bg-light-gray flex-row justify-between items-center px-5">
         <FontAwesome name="ellipsis-v" color="black" size={24} />
         <View className="flex-row gap-3">
@@ -23,8 +22,7 @@ const Home = () => {
         </View>
       </View>
 
-      {/* Vertical Scrollable Main Screen */}
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 24 }}
       >
@@ -41,7 +39,7 @@ const Home = () => {
                 </Text>
                 <Text
                   className="text-xs text-light-black"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Last Visit, Yesterday
                 </Text>
@@ -57,7 +55,7 @@ const Home = () => {
           </View>
 
           <Text
-            className="text-2xl mt-5 truncate"
+            className="text-3xl mt-5 truncate"
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
@@ -87,8 +85,8 @@ const Home = () => {
           </View>
 
           <Text
-            className="text-xl mt-2"
-            style={{ fontFamily: "Inter_400Regular" }}
+            className="text-3xl mt-2"
+            style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
             Shops
@@ -107,7 +105,7 @@ const Home = () => {
                 />
                 <Text
                   className="text-xl mt-1 truncate"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
                   Groceries
@@ -120,7 +118,7 @@ const Home = () => {
                 />
                 <Text
                   className="text-xl mt-1 truncate"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
                   Food
@@ -133,7 +131,7 @@ const Home = () => {
                 />
                 <Text
                   className="text-xl mt-1 truncate"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
                   Rides
@@ -146,7 +144,7 @@ const Home = () => {
                 />
                 <Text
                   className="text-xl mt-1 truncate"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
                   Groceries
@@ -157,8 +155,8 @@ const Home = () => {
 
           <View className="flex-row justify-between items-center mt-3">
             <Text
-              className="text-xl mt-2"
-              style={{ fontFamily: "Inter_400Regular" }}
+              className="text-3xl mt-2"
+              style={{ fontFamily: "Inter_600SemiBold" }}
               numberOfLines={1}
             >
               Promotion
@@ -175,7 +173,7 @@ const Home = () => {
             >
               <Text
                 className="text-base text-black"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 See all
@@ -201,7 +199,7 @@ const Home = () => {
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <Text
                     className="text-sm truncate"
-                    style={{ fontFamily: "Inter_400Regular" }}
+                    style={{ fontFamily: "Inter_600SemiBold" }}
                     numberOfLines={1}
                   >
                     Assorted Jollof
@@ -210,7 +208,7 @@ const Home = () => {
                     <Iconify icon="ion:link-outline" size={24} color="black" />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       15 KM away
@@ -219,20 +217,28 @@ const Home = () => {
                 </View>
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <View className="flex-row items-center">
-                    <Iconify icon="weui:location-outlined" size={15} color="black" />
+                    <Iconify
+                      icon="weui:location-outlined"
+                      size={15}
+                      color="black"
+                    />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       Tamale, Nothern Region
                     </Text>
                   </View>
                   <View className="flex-row items-center">
-                    <Iconify icon="line-md:star-filled" size={14} color="black" />
+                    <Iconify
+                      icon="line-md:star-filled"
+                      size={14}
+                      color="black"
+                    />
                     <Text
                       className="text-[10px] truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       4.5
@@ -251,7 +257,7 @@ const Home = () => {
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <Text
                     className="text-sm truncate"
-                    style={{ fontFamily: "Inter_400Regular" }}
+                    style={{ fontFamily: "Inter_600SemiBold" }}
                     numberOfLines={1}
                   >
                     Assorted Jollof
@@ -260,7 +266,7 @@ const Home = () => {
                     <Iconify icon="ion:link-outline" size={24} color="black" />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       15 KM away
@@ -269,20 +275,28 @@ const Home = () => {
                 </View>
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <View className="flex-row items-center">
-                    <Iconify icon="weui:location-outlined" size={15} color="black" />
+                    <Iconify
+                      icon="weui:location-outlined"
+                      size={15}
+                      color="black"
+                    />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       Tamale, Nothern Region
                     </Text>
                   </View>
                   <View className="flex-row items-center">
-                    <Iconify icon="line-md:star-filled" size={14} color="black" />
+                    <Iconify
+                      icon="line-md:star-filled"
+                      size={14}
+                      color="black"
+                    />
                     <Text
                       className="text-[10px] truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       4.5
@@ -296,7 +310,7 @@ const Home = () => {
           <View className="flex-row justify-between items-center mt-3">
             <Text
               className="text-xl mt-2"
-              style={{ fontFamily: "Inter_400Regular" }}
+              style={{ fontFamily: "Inter_600SemiBold" }}
               numberOfLines={1}
             >
               Suggested for you
@@ -313,7 +327,7 @@ const Home = () => {
             >
               <Text
                 className="text-base text-black"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
                 See all
@@ -339,7 +353,7 @@ const Home = () => {
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <Text
                     className="text-sm truncate"
-                    style={{ fontFamily: "Inter_400Regular" }}
+                    style={{ fontFamily: "Inter_600SemiBold" }}
                     numberOfLines={1}
                   >
                     Assorted Jollof
@@ -348,7 +362,7 @@ const Home = () => {
                     <Iconify icon="ion:link-outline" size={24} color="black" />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       15 KM away
@@ -357,20 +371,28 @@ const Home = () => {
                 </View>
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <View className="flex-row items-center">
-                    <Iconify icon="weui:location-outlined" size={15} color="black" />
+                    <Iconify
+                      icon="weui:location-outlined"
+                      size={15}
+                      color="black"
+                    />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       Tamale, Nothern Region
                     </Text>
                   </View>
                   <View className="flex-row items-center">
-                    <Iconify icon="line-md:star-filled" size={14} color="black" />
+                    <Iconify
+                      icon="line-md:star-filled"
+                      size={14}
+                      color="black"
+                    />
                     <Text
                       className="text-[10px] truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       4.5
@@ -389,7 +411,7 @@ const Home = () => {
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <Text
                     className="text-sm truncate"
-                    style={{ fontFamily: "Inter_400Regular" }}
+                    style={{ fontFamily: "Inter_600SemiBold" }}
                     numberOfLines={1}
                   >
                     Assorted Jollof
@@ -398,7 +420,7 @@ const Home = () => {
                     <Iconify icon="ion:link-outline" size={24} color="black" />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       15 KM away
@@ -407,20 +429,28 @@ const Home = () => {
                 </View>
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <View className="flex-row items-center">
-                    <Iconify icon="weui:location-outlined" size={15} color="black" />
+                    <Iconify
+                      icon="weui:location-outlined"
+                      size={15}
+                      color="black"
+                    />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       Tamale, Nothern Region
                     </Text>
                   </View>
                   <View className="flex-row items-center">
-                    <Iconify icon="line-md:star-filled" size={14} color="black" />
+                    <Iconify
+                      icon="line-md:star-filled"
+                      size={14}
+                      color="black"
+                    />
                     <Text
                       className="text-[10px] truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       4.5
@@ -439,7 +469,7 @@ const Home = () => {
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <Text
                     className="text-sm truncate"
-                    style={{ fontFamily: "Inter_400Regular" }}
+                    style={{ fontFamily: "Inter_600SemiBold" }}
                     numberOfLines={1}
                   >
                     Assorted Jollof
@@ -448,7 +478,7 @@ const Home = () => {
                     <Iconify icon="ion:link-outline" size={24} color="black" />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       15 KM away
@@ -457,20 +487,28 @@ const Home = () => {
                 </View>
                 <View className="flex-row justify-between items-center mt-1 px-3">
                   <View className="flex-row items-center">
-                    <Iconify icon="weui:location-outlined" size={15} color="black" />
+                    <Iconify
+                      icon="weui:location-outlined"
+                      size={15}
+                      color="black"
+                    />
                     <Text
                       className="text-xs truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       Tamale, Nothern Region
                     </Text>
                   </View>
                   <View className="flex-row items-center">
-                    <Iconify icon="line-md:star-filled" size={14} color="black" />
+                    <Iconify
+                      icon="line-md:star-filled"
+                      size={14}
+                      color="black"
+                    />
                     <Text
                       className="text-[10px] truncate"
-                      style={{ fontFamily: "Inter_400Regular" }}
+                      style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
                       4.5
