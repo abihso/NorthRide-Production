@@ -1,16 +1,32 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Button } from "@rneui/base";
-import { Avatar, SearchBar } from "@rneui/themed";
-import { useState } from "react";
+import { Avatar, SearchBar, Skeleton } from "@rneui/themed";
+import { useEffect, useState } from "react";
 import { Image, ScrollView, Text, View } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import HomeSkeleton from "@/screens/home-skeleton";
 
 const Home = () => {
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    // Simulate loading data (e.g. API request)
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 5000); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const updateSearch = (search: string) => {
     setSearch(search);
   };
+
+  if (loading) {
+    return <HomeSkeleton />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white">
@@ -237,7 +253,7 @@ const Home = () => {
                       color="black"
                     />
                     <Text
-                      className="text-[10px] truncate"
+                      className="text-xs truncate"
                       style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
@@ -295,7 +311,7 @@ const Home = () => {
                       color="black"
                     />
                     <Text
-                      className="text-[10px] truncate"
+                      className="text-xs truncate"
                       style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
@@ -309,11 +325,11 @@ const Home = () => {
 
           <View className="flex-row justify-between items-center mt-3">
             <Text
-              className="text-xl mt-2"
+              className="text-3xl mt-2"
               style={{ fontFamily: "Inter_600SemiBold" }}
               numberOfLines={1}
             >
-              Suggested for you
+              Suggestions
             </Text>
             <Button
               radius={"xl"}
@@ -391,7 +407,7 @@ const Home = () => {
                       color="black"
                     />
                     <Text
-                      className="text-[10px] truncate"
+                      className="text-xs truncate"
                       style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
@@ -449,7 +465,7 @@ const Home = () => {
                       color="black"
                     />
                     <Text
-                      className="text-[10px] truncate"
+                      className="text-xs truncate"
                       style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >
@@ -507,7 +523,7 @@ const Home = () => {
                       color="black"
                     />
                     <Text
-                      className="text-[10px] truncate"
+                      className="text-xs truncate"
                       style={{ fontFamily: "Inter_600SemiBold" }}
                       numberOfLines={1}
                     >

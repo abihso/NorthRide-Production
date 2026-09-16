@@ -12,7 +12,6 @@ import {
   NativeSyntheticEvent,
   Platform,
   Pressable,
-  ScrollView,
   Text,
   TextInput,
   TextInputKeyPressEventData,
@@ -28,7 +27,6 @@ const activeShadowStyle = {
   elevation: 5,
 };
 
-// Access Expo public environment variables
 const url = process.env.EXPO_PUBLIC_BACKEND_URL;
 const DEV = process.env.EXPO_PUBLIC_DEV === "dev";
 
@@ -155,7 +153,6 @@ const Register = () => {
   const handleOtpChange = (text: string, index: number) => {
     if (verifyError) setVerifyError("");
 
-    // Handle multi-character paste (e.g. user pastes 6 digits)
     if (text.length > 1) {
       const pastedDigits = text
         .replace(/[^0-9]/g, "")
@@ -169,7 +166,6 @@ const Register = () => {
 
       setOtp(newOtp);
 
-      // Focus the next empty input or the last input
       const nextIndex = Math.min(pastedDigits.length, 5);
       inputRefs.current[nextIndex]?.focus();
       return;
@@ -179,7 +175,6 @@ const Register = () => {
     newOtp[index] = text;
     setOtp(newOtp);
 
-    // Auto-advance to the next input field if a character was entered
     if (text && index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -191,7 +186,6 @@ const Register = () => {
   ) => {
     if (e.nativeEvent.key === "Backspace") {
       if (otp[index] === "" && index > 0) {
-        // If current box is empty and user hits backspace, delete previous digit and move focus back
         const newOtp = [...otp];
         newOtp[index - 1] = "";
         setOtp(newOtp);
@@ -239,24 +233,22 @@ const Register = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative overflow-hidden">
+      {/* Background shape placed first so it stays behind all content */}
+      <View className="h-44 w-44 rounded-3xl absolute -bottom-14 -left-10 bg-[#EDEDEA] z-0 -rotate-12" />
+
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+        className="flex-1 z-10"
       >
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            padding: 28,
-            justifyContent: "space-between",
-          }}
-          showsVerticalScrollIndicator={false}
-        >
+        <View className="flex-1 justify-between p-5">
           <View>
-            <View className="h-16 px-1.5 bg-[#F1F1F1] rounded-3xl flex justify-between items-center flex-row">
+            {/* Tab Selector */}
+            <View className="h-16 px-1 bg-[#F1F1F1] rounded-3xl flex justify-between items-center flex-row">
               <Pressable
                 onPress={() => handleTabChange("email")}
-                className={`w-2/4 py-3 rounded-3xl ${
+                className={`w-2/4 h-14 flex items-center justify-center rounded-3xl ${
                   activeTab === "email" ? "bg-white" : "bg-transparent"
                 }`}
                 style={activeTab === "email" ? activeShadowStyle : {}}
@@ -265,7 +257,7 @@ const Register = () => {
                   className={`text-center ${
                     activeTab === "email" ? "text-black" : "text-gray-500"
                   }`}
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Email
                 </Text>
@@ -273,7 +265,7 @@ const Register = () => {
 
               <Pressable
                 onPress={() => handleTabChange("phone")}
-                className={`w-2/4 py-3 rounded-3xl ${
+                className={`w-2/4 h-14 flex items-center justify-center  rounded-3xl ${
                   activeTab === "phone" ? "bg-white" : "bg-transparent"
                 }`}
                 style={activeTab === "phone" ? activeShadowStyle : {}}
@@ -282,7 +274,7 @@ const Register = () => {
                   className={`text-center ${
                     activeTab === "phone" ? "text-black" : "text-gray-500"
                   }`}
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   Phone
                 </Text>
@@ -305,7 +297,7 @@ const Register = () => {
               </Text>
               <Text
                 className="text-[#01032D] mt-4 shadow-slate-400 mb-4"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 Join us for the best delivery system
               </Text>
@@ -313,7 +305,7 @@ const Register = () => {
               {/* Dynamic Input (Email / Phone) */}
               <Input
                 style={{
-                  fontFamily: "Inter_400Regular",
+                  fontFamily: "Inter_600SemiBold",
                   fontSize: UI.inputFontSize,
                 }}
                 placeholder={activeTab === "email" ? "Email" : "Phone Number"}
@@ -336,7 +328,7 @@ const Register = () => {
               {/* Password Input */}
               <Input
                 style={{
-                  fontFamily: "Inter_400Regular",
+                  fontFamily: "Inter_600SemiBold",
                   fontSize: UI.inputFontSize,
                 }}
                 placeholder="Password"
@@ -370,7 +362,7 @@ const Register = () => {
               {/* Confirm Password Input */}
               <Input
                 style={{
-                  fontFamily: "Inter_400Regular",
+                  fontFamily: "Inter_600SemiBold",
                   fontSize: UI.inputFontSize,
                 }}
                 placeholder="Confirm Password"
@@ -438,7 +430,7 @@ const Register = () => {
                 <View className="border-b border-[#A9A9A9] w-2/6" />
               </View>
 
-              <View className="flex flex-row justify-between mt-8">
+              <View className="flex flex-row justify-between gap-1 mt-10">
                 <Pressable className="flex-row items-center gap-2 py-2 px-5 border border-[#E0E0E0] w-3/6 rounded-3xl">
                   <Image
                     className="w-10 h-10"
@@ -460,39 +452,36 @@ const Register = () => {
             </View>
           </View>
 
-          {/* Bottom Area */}
-          <View className="relative mt-12 pb-4">
-            <View className="flex-row gap-3 justify-center items-center z-10 relative">
+          {/* Footer containing policies */}
+          <View className="relative pb-2 z-20">
+            <View className="flex-row gap-3 justify-center items-center">
               <Text
-                style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
-                className="text-[#4A4946]"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                className="text-xs text-[#4A4946]"
               >
                 policies
               </Text>
               <Text
-                style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
-                className="text-[#4A4946]"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                className="text-xs text-[#4A4946]"
               >
                 Supports
               </Text>
               <Text
-                style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
-                className="text-[#4A4946]"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                className="text-xs text-[#4A4946]"
               >
                 Help center
               </Text>
             </View>
-
-            <View className="w-44 h-44 bg-[#EDEDEA] rounded-3xl absolute -bottom-30 left-20 -rotate-45 z-0" />
           </View>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
 
       {/* Verification Overlay Modal */}
       {isModalVisible && (
         <View className="absolute inset-0 z-50 bg-black/40 justify-center items-center px-6">
           <View className="bg-white rounded-3xl p-6 w-full items-center relative">
-            {/* Close Icon (X) matching design */}
             <Pressable
               onPress={() => {
                 setIsModalVisible(false);
@@ -503,7 +492,6 @@ const Register = () => {
               <Ionicons name="close" size={22} color="black" />
             </Pressable>
 
-            {/* Dynamic Icon Badge */}
             <View className="w-14 h-14 bg-[#E0C038] rounded-2xl justify-center items-center mb-6 mt-2">
               <Ionicons
                 name={activeTab === "email" ? "mail" : "chatbox-ellipses"}
@@ -512,7 +500,6 @@ const Register = () => {
               />
             </View>
 
-            {/* Dynamic Title */}
             <Text
               className="text-2xl font-bold text-black text-center mb-2"
               style={{ fontFamily: "Inter_600SemiBold" }}
@@ -520,10 +507,9 @@ const Register = () => {
               {activeTab === "email" ? "Check your email" : "Check your sms"}
             </Text>
 
-            {/* Dynamic Description */}
             <Text
               className="text-gray-600 text-center text-sm px-2 mb-4"
-              style={{ fontFamily: "Inter_400Regular" }}
+              style={{ fontFamily: "Inter_600SemiBold" }}
             >
               We sent a verification code to{"\n"}
               <Text className="font-bold text-black">
@@ -534,20 +520,18 @@ const Register = () => {
               </Text>
             </Text>
 
-            {/* Verification Error Message Alert */}
             {verifyError ? (
               <View className="flex-row items-center bg-red-50 border border-red-200 px-3 py-2 rounded-xl mb-4 w-full justify-center gap-1.5">
                 <Ionicons name="alert-circle" size={18} color="#EF4444" />
                 <Text
                   className="text-red-500 text-xs font-semibold text-center"
-                  style={{ fontFamily: "Inter_400Regular" }}
+                  style={{ fontFamily: "Inter_600SemiBold" }}
                 >
                   {verifyError}
                 </Text>
               </View>
             ) : null}
 
-            {/* 6 Digit Input Boxes */}
             <View className="flex-row justify-between w-full mb-6 px-1">
               {otp.map((digit, index) => (
                 <TextInput
@@ -567,7 +551,6 @@ const Register = () => {
               ))}
             </View>
 
-            {/* Verify Button with loading indicator */}
             <Pressable
               onPress={handleVerifyCode}
               disabled={isVerifying}
@@ -585,7 +568,6 @@ const Register = () => {
               )}
             </Pressable>
 
-            {/* Back to log in Link */}
             <Pressable
               onPress={() => {
                 setIsModalVisible(false);
@@ -596,7 +578,7 @@ const Register = () => {
               <Ionicons name="arrow-back" size={16} color="black" />
               <Text
                 className="text-black text-xs font-medium"
-                style={{ fontFamily: "Inter_400Regular" }}
+                style={{ fontFamily: "Inter_600SemiBold" }}
               >
                 Back to log in
               </Text>

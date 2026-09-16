@@ -52,6 +52,7 @@ module.exports = function (api) {
             "ph:cardholder-bold",
             "ri:arrow-drop-down-line",
             "material-symbols:check",
+            "solar:camera-outline",
           ],
         },
       ],

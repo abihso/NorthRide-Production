@@ -27,7 +27,7 @@ const Location = () => {
         Around
       </Text>
       <Text
-        className="text-[8px] mt-1 text-[#767676]"
+        className="text-xs mt-1 text-[#767676]"
         style={{ fontFamily: "Inter_600SemiBold" }}
       >
         Your Location
@@ -38,7 +38,7 @@ const Location = () => {
 
       <View className="h-20 absolute bottom-10 left-0 right-0 flex justify-center items-center">
         <Button
-          onPress={() => router.push("/(dashboard)/(home)")}
+          onPress={() => router.push("/(riders-dashboard)")}
           className=""
           buttonStyle={{
             width: 300,

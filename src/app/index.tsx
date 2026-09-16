@@ -1,6 +1,3 @@
-import { Inter_600SemiBold } from "@expo-google-fonts/inter";
-import { LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy/400Regular";
-import { useFonts } from "@expo-google-fonts/inter";
 import { useEffect, useRef, useState } from "react";
 import {
   Animated,
@@ -17,8 +14,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Shadow } from "react-native-shadow-2";
 import { router } from "expo-router";
 import SplashScreen from "@/components/Splash-Screen";
-import { Inter_400Regular } from "@expo-google-fonts/inter/400Regular";
-import { Inter_300Light } from "@expo-google-fonts/inter/300Light";
 
 const { width } = Dimensions.get("window");
 
@@ -68,13 +63,6 @@ function AnimatedButton({ children, style, ...props }: AnimatedButtonProps) {
 }
 
 export default function Index() {
-  const [fontsLoaded] = useFonts({
-    Inter_400Regular,
-    Inter_300Light,
-    Inter_600SemiBold,
-    LuckiestGuy_400Regular,
-  });
-
   const [isSplashVisible, setIsSplashVisible] = useState(true);
   const images = [image1, image2, image3];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -122,7 +110,7 @@ export default function Index() {
     };
   }, [currentIndex, isSplashVisible]);
 
-  if (!fontsLoaded || isSplashVisible) {
+  if (isSplashVisible) {
     return <SplashScreen />;
   }
 
@@ -251,20 +239,20 @@ export default function Index() {
 
               <View className="flex-row gap-3 mt-24 justify-center items-center -ml-20">
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 11 }}
-                  className="text-white"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  className="text-white text-xs"
                 >
                   policies
                 </Text>
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 11 }}
-                  className="text-white"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  className="text-white text-xs"
                 >
                   Supports
                 </Text>
                 <Text
-                  style={{ fontFamily: "Inter_600SemiBold", fontSize: 11 }}
-                  className="text-white"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  className="text-white text-xs"
                 >
                   Help center
                 </Text>

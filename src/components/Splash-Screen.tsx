@@ -1,6 +1,3 @@
-import { Inter_600SemiBold } from "@expo-google-fonts/inter";
-import { LuckiestGuy_400Regular } from "@expo-google-fonts/luckiest-guy/400Regular";
-import { useFonts } from "@expo-google-fonts/inter"; 
 import { useEffect, useRef } from "react";
 import {
   ActivityIndicator,
@@ -11,47 +8,31 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SplashScreen() {
-  const [fontsLoaded] = useFonts({
-    LuckiestGuy_400Regular,
-    Inter_600SemiBold,
-  
-  });
-
   const slideAnim = useRef(new Animated.Value(-350)).current;
   const scaleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (fontsLoaded) {
-      Animated.parallel([
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 1700,
+    Animated.parallel([
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 1700,
+        useNativeDriver: true,
+      }),
+      Animated.sequence([
+        Animated.timing(scaleAnim, {
+          toValue: 1.2,
+          duration: 600,
           useNativeDriver: true,
         }),
-        Animated.sequence([
-          Animated.timing(scaleAnim, {
-            toValue: 1.2,
-            duration: 600,
-            useNativeDriver: true,
-          }),
-          Animated.spring(scaleAnim, {
-            toValue: 1,
-            friction: 4,
-            tension: 40,
-            useNativeDriver: true,
-          }),
-        ]),
-      ]).start();
-    }
-  }, [fontsLoaded, slideAnim, scaleAnim]);
-
-  if (!fontsLoaded) {
-    return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-white dark:bg-black">
-        <ActivityIndicator size="large" color="#DCA501" />
-      </SafeAreaView>
-    );
-  }
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          friction: 4,
+          tension: 40,
+          useNativeDriver: true,
+        }),
+      ]),
+    ]).start();
+  }, [slideAnim, scaleAnim]);
 
   return (
     <SafeAreaView className="flex-1 items-center bg-[#070706]">

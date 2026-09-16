@@ -87,7 +87,7 @@ const ConfirmRoute = () => {
           paymentStatus: "pending",
         })
         .then(async (res) => {
-          Alert.alert("message", "Oreder has been made successfully");
+          Alert.alert("message", "Order has been made successfully");
           setModal(false);
           await AsyncStorage.setItem("disableCancelButton", "!disabled");
           router.push("/(dashboard)/(orders)/lookingforrider");
@@ -369,7 +369,7 @@ const ConfirmRoute = () => {
                   : "Destination"}
               </Text>
               <Text
-                className="text-[10px]"
+                className="text-xs"
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
@@ -380,7 +380,7 @@ const ConfirmRoute = () => {
 
           <View className="items-end">
             <Text
-              className="text-[10px]"
+              className="text-xs"
               style={{ fontFamily: "Inter_600SemiBold" }}
               numberOfLines={1}
             >
@@ -415,10 +415,9 @@ const ConfirmRoute = () => {
         </Button>
       </View>
 
-      {/* Payment Selection Modal */}
       {modal && (
         <View className="absolute inset-0 z-50 bg-black/90 flex-col justify-center items-center">
-          <View className="w-5/6 h-4/6 bg-light-gray1 rounded-3xl p-5">
+          <View className="w-5/6 h-3/6 bg-light-gray1 rounded-3xl p-5">
             <View
               className="h-3/5 rounded-3xl overflow-hidden"
               style={{
@@ -511,7 +510,7 @@ const ConfirmRoute = () => {
               buttonStyle={{ backgroundColor: "black" }}
               containerStyle={{
                 borderRadius: 30,
-                marginTop: 20,
+                marginTop: 6,
                 height: UI.buttonHeight,
                 justifyContent: "center",
                 // Drop shadow props

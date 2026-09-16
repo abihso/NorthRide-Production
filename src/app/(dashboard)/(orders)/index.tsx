@@ -101,6 +101,9 @@ const Drop_n_Pickoff = () => {
   );
   const [isSearchingPickup, setIsSearchingPickup] = useState<boolean>(false);
   const [isSearchingDropoff, setIsSearchingDropoff] = useState<boolean>(false);
+  const [isGettingCurrentLocation, setIsGettingCurrentLocation] = useState<
+    "pickup" | "dropoff" | null
+  >(null);
 
   // Map Modal State
   const [selectingTarget, setSelectingTarget] = useState<
@@ -110,7 +113,7 @@ const Drop_n_Pickoff = () => {
     latitude: number;
     longitude: number;
   }>({
-    latitude: 5.6037, 
+    latitude: 5.6037,
     longitude: -0.187,
   });
   const [tempAddress, setTempAddress] = useState<string>("Loading location...");
@@ -210,6 +213,7 @@ const Drop_n_Pickoff = () => {
       }
     }
   };
+
   useEffect(() => {
     (async () => {
       setUserId(await AsyncStorage.getItem("userId"));
@@ -296,27 +300,24 @@ const Drop_n_Pickoff = () => {
 
   const handleSelectCurrentLocation = async (target: "pickup" | "dropoff") => {
     try {
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      const coords = {
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
-      };
-      const address = await fetchAddress(coords);
-      const loc = { ...coords, address };
+      setIsGettingCurrentLocation(target);
+      const loc = await getCurrentLocation();
 
       if (target === "pickup") {
         isPickupSelectedRef.current = true;
         setPickupLocation(loc);
-        setPickupInput(address);
+        setPickupInput(loc.address);
         setPickupSuggestions([]);
       } else {
         isDropoffSelectedRef.current = true;
         setDropoffLocation(loc);
-        setDropoffInput(address);
+        setDropoffInput(loc.address);
         setDropoffSuggestions([]);
       }
     } catch (error) {
       Alert.alert("Error", "Could not fetch current location.");
+    } finally {
+      setIsGettingCurrentLocation(null);
     }
   };
 
@@ -428,10 +429,11 @@ const Drop_n_Pickoff = () => {
       console.error("Failed to save locations to storage:", error);
     }
   };
+
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative">
       {/* Top Header */}
-      <View className="h-24 bg-[#F7F7F7] px-5 pt-3">
+      <View className="h-24 bg-[#F7F7F7] px-5 pt-3 z-10">
         <View className="flex-row items-center gap-3">
           <Pressable
             onPress={() => router.push("/(dashboard)/(home)/(menu)")}
@@ -444,11 +446,11 @@ const Drop_n_Pickoff = () => {
             style={{ fontFamily: "Inter_600SemiBold" }}
             numberOfLines={1}
           >
-            {screenName == "ride"
+            {screenName === "ride"
               ? "Rides"
-              : screenName == "send"
+              : screenName === "send"
                 ? "Send"
-                : screenName == "receive"
+                : screenName === "receive"
                   ? "Receive"
                   : null}
           </Text>
@@ -476,179 +478,207 @@ const Drop_n_Pickoff = () => {
       </View>
 
       {screen === "book" ? (
-        <ScrollView className="px-7 py-3" keyboardShouldPersistTaps="handled">
-          <Text
-            className="text-3xl mt-5"
-            style={{ fontFamily: "Inter_600SemiBold" }}
-            numberOfLines={1}
-          >
-            Pickup location
-          </Text>
-
-          <View className="flex-row justify-between items-center">
-            <SearchBar
-              placeholder="Pickup address"
-              onChangeText={(text) => {
-                isPickupSelectedRef.current = false;
-                setPickupInput(text);
-              }}
-              value={pickupInput}
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-                marginTop: 10,
-                width: "90%",
-              }}
-              inputStyle={{ backgroundColor: "#F2F2F2" }}
-              inputContainerStyle={{
-                backgroundColor: "#F2F2F2",
-                borderRadius: 30,
-              }}
-            />
-            <Pressable onPress={() => openMapPicker("pickup")}>
-              <FontAwesome name="plus" size={20} />
-            </Pressable>
-          </View>
-
-          {/* Dynamic Pickup Autocomplete Suggestions */}
-          <LocationSuggestionsList
-            isLoading={isSearchingPickup}
-            suggestions={pickupSuggestions}
-            onSelect={(item) => selectSuggestion(item, "pickup")}
-          />
-
-          <View className="flex-row justify-between items-center mt-5">
-            <Pressable
-              onPress={() => handleSelectCurrentLocation("pickup")}
-              className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
-            >
-              <Iconify
-                icon="fa-solid:location-arrow"
-                size={18}
-                color={"black"}
-              />
-              <Text
-                className="text-sm"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Current Location
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => openMapPicker("pickup")}
-              className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
-            >
-              <Iconify icon="mingcute:map-pin-fill" size={18} color={"black"} />
-              <Text
-                className="text-sm"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Select with map
-              </Text>
-            </Pressable>
-          </View>
-
-          <View className="flex-row justify-end items-center mt-5">
-            <Pressable onPress={handleSwapLocations}>
-              <Iconify
-                icon="boxicons:swap-vertical"
-                size={34}
-                color={"black"}
-              />
-            </Pressable>
-          </View>
-
-          <Text
-            className="text-3xl"
-            style={{ fontFamily: "Inter_600SemiBold" }}
-            numberOfLines={1}
-          >
-            Drop off location
-          </Text>
-
-          <View className="flex-row justify-between items-center">
-            <SearchBar
-              placeholder="Drop off address"
-              onChangeText={(text) => {
-                isDropoffSelectedRef.current = false;
-                setDropoffInput(text);
-              }}
-              value={dropoffInput}
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              containerStyle={{
-                backgroundColor: "transparent",
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-                marginTop: 10,
-                width: "90%",
-              }}
-              inputStyle={{ backgroundColor: "#F2F2F2" }}
-              inputContainerStyle={{
-                backgroundColor: "#F2F2F2",
-                borderRadius: 30,
-              }}
-            />
-            <Pressable onPress={() => openMapPicker("dropoff")}>
-              <FontAwesome name="plus" size={20} />
-            </Pressable>
-          </View>
-
-          {/* Dynamic Dropoff Autocomplete Suggestions */}
-          <LocationSuggestionsList
-            isLoading={isSearchingDropoff}
-            suggestions={dropoffSuggestions}
-            onSelect={(item) => selectSuggestion(item, "dropoff")}
-          />
-
-          <View className="flex-row justify-between items-center my-5">
-            <Pressable
-              onPress={() => handleSelectCurrentLocation("dropoff")}
-              className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
-            >
-              <Iconify
-                icon="fa-solid:location-arrow"
-                size={18}
-                color={"black"}
-              />
-              <Text
-                className="text-sm"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Current Location
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={() => openMapPicker("dropoff")}
-              className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
-            >
-              <Iconify icon="mingcute:map-pin-fill" size={18} color={"black"} />
-              <Text
-                className="text-sm"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Select with map
-              </Text>
-            </Pressable>
-          </View>
-
-          <Pressable
-            onPress={handleSubmit}
-            className="py-4 my-5 bg-black rounded-3xl"
+        <View className="flex-1 relative">
+          <ScrollView
+            className="px-7 py-3"
+            contentContainerStyle={{ paddingBottom: 100 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
           >
             <Text
-              className="text-[#FDBF07] text-center text-xl"
+              className="text-3xl mt-5"
               style={{ fontFamily: "Inter_600SemiBold" }}
+              numberOfLines={1}
             >
-              Continue
+              Pickup location
             </Text>
-          </Pressable>
-        </ScrollView>
+
+            <View className="flex-row justify-between items-center">
+              <SearchBar
+                placeholder="Pickup address"
+                onChangeText={(text) => {
+                  isPickupSelectedRef.current = false;
+                  setPickupInput(text);
+                }}
+                value={pickupInput}
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                containerStyle={{
+                  backgroundColor: "transparent",
+                  borderTopWidth: 0,
+                  borderBottomWidth: 0,
+                  marginTop: 10,
+                  width: "90%",
+                }}
+                inputStyle={{ backgroundColor: "#F2F2F2" }}
+                inputContainerStyle={{
+                  backgroundColor: "#F2F2F2",
+                  borderRadius: 30,
+                }}
+              />
+              <Pressable onPress={() => openMapPicker("pickup")}>
+                <FontAwesome name="plus" size={20} />
+              </Pressable>
+            </View>
+
+            {/* Dynamic Pickup Autocomplete Suggestions */}
+            <LocationSuggestionsList
+              isLoading={isSearchingPickup}
+              suggestions={pickupSuggestions}
+              onSelect={(item) => selectSuggestion(item, "pickup")}
+            />
+
+            <View className="flex-row justify-between items-center mt-5">
+              <Pressable
+                onPress={() => handleSelectCurrentLocation("pickup")}
+                disabled={isGettingCurrentLocation !== null}
+                className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
+              >
+                {isGettingCurrentLocation === "pickup" ? (
+                  <ActivityIndicator size="small" color="#A98516" />
+                ) : (
+                  <Iconify
+                    icon="fa-solid:location-arrow"
+                    size={18}
+                    color={"black"}
+                  />
+                )}
+                <Text
+                  className="text-sm"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Current Location
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => openMapPicker("pickup")}
+                className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
+              >
+                <Iconify
+                  icon="mingcute:map-pin-fill"
+                  size={18}
+                  color={"black"}
+                />
+                <Text
+                  className="text-sm"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Select with map
+                </Text>
+              </Pressable>
+            </View>
+
+            <View className="flex-row justify-end items-center mt-5">
+              <Pressable onPress={handleSwapLocations}>
+                <Iconify
+                  icon="boxicons:swap-vertical"
+                  size={34}
+                  color={"black"}
+                />
+              </Pressable>
+            </View>
+
+            <Text
+              className="text-3xl"
+              style={{ fontFamily: "Inter_600SemiBold" }}
+              numberOfLines={1}
+            >
+              Drop off location
+            </Text>
+
+            <View className="flex-row justify-between items-center">
+              <SearchBar
+                placeholder="Drop off address"
+                onChangeText={(text) => {
+                  isDropoffSelectedRef.current = false;
+                  setDropoffInput(text);
+                }}
+                value={dropoffInput}
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                containerStyle={{
+                  backgroundColor: "transparent",
+                  borderTopWidth: 0,
+                  borderBottomWidth: 0,
+                  marginTop: 10,
+                  width: "90%",
+                }}
+                inputStyle={{ backgroundColor: "#F2F2F2" }}
+                inputContainerStyle={{
+                  backgroundColor: "#F2F2F2",
+                  borderRadius: 30,
+                }}
+              />
+              <Pressable onPress={() => openMapPicker("dropoff")}>
+                <FontAwesome name="plus" size={20} />
+              </Pressable>
+            </View>
+
+            {/* Dynamic Dropoff Autocomplete Suggestions */}
+            <LocationSuggestionsList
+              isLoading={isSearchingDropoff}
+              suggestions={dropoffSuggestions}
+              onSelect={(item) => selectSuggestion(item, "dropoff")}
+            />
+
+            <View className="flex-row justify-between items-center my-5">
+              <Pressable
+                onPress={() => handleSelectCurrentLocation("dropoff")}
+                disabled={isGettingCurrentLocation !== null}
+                className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
+              >
+                {isGettingCurrentLocation === "dropoff" ? (
+                  <ActivityIndicator size="small" color="#A98516" />
+                ) : (
+                  <Iconify
+                    icon="fa-solid:location-arrow"
+                    size={18}
+                    color={"black"}
+                  />
+                )}
+                <Text
+                  className="text-sm"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Current Location
+                </Text>
+              </Pressable>
+              <Pressable
+                onPress={() => openMapPicker("dropoff")}
+                className="flex-row items-center w-[47%] h-16 py-3 justify-center gap-3 rounded-3xl bg-[#F7F7F7]"
+              >
+                <Iconify
+                  icon="mingcute:map-pin-fill"
+                  size={18}
+                  color={"black"}
+                />
+                <Text
+                  className="text-sm"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                  numberOfLines={1}
+                >
+                  Select with map
+                </Text>
+              </Pressable>
+            </View>
+          </ScrollView>
+
+          {/* Floating Bottom Button */}
+          <View className="absolute bottom-5 left-0 right-0 px-7 bg-white py-2 z-10">
+            <Pressable
+              onPress={handleSubmit}
+              className="py-4 bg-black rounded-3xl"
+            >
+              <Text
+                className="text-[#FDBF07] text-center text-xl"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+              >
+                Continue
+              </Text>
+            </Pressable>
+          </View>
+        </View>
       ) : screen === "past" ? (
         <Past userId={userId} status={"delivered"} category={screenName} />
       ) : screen === "canceled" ? (

@@ -2,7 +2,7 @@ import type { LocationData } from "@/types/types";
 import { decodePolyline } from "@/utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearProgress } from "@rneui/themed";
-import { useNavigation } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
@@ -33,9 +33,12 @@ const LookingForRiderRoute = () => {
   const [calculatedPrice, setCalculatedPrice] = useState<string>("0.00");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const handleCancel = () => {
-    Alert.alert("message", "Canceled");
+    // Alert.alert("message", "Canceled");
     setTimeout(() => {
       setModal(false);
+      setTimeout(() => {
+        router.push("/(dashboard)/(home)")
+      }, 10);
     }, 2000);
   };
 
@@ -193,7 +196,7 @@ const LookingForRiderRoute = () => {
               Looking for rider
             </Text>
             <Text
-              className="text-[10px]"
+              className="text-xs"
               style={{ fontFamily: "Inter_300Light" }}
             >
               Connecting to riders nearby
@@ -265,7 +268,7 @@ const LookingForRiderRoute = () => {
                 Are you sure to cancel the ride?
               </Text>
               <Text
-                className="text-[10px]"
+                className="text-xs"
                 style={{ fontFamily: "Inter_300Light" }}
               >
                 If you cancel this, you may wait a while before you get the next

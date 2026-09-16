@@ -6,15 +6,15 @@ import { Button } from "@rneui/base";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    Modal,
-    Platform,
-    Pressable,
-    ScrollView,
-    Text,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
 } from "react-native";
 import { Iconify } from "react-native-iconify/native";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
@@ -143,162 +143,182 @@ const CalculatePrice = () => {
     "Select payment method";
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <View className="h-[400px]">
-        {pickup && dropoff ? (
-          <MapView
-            ref={mapRef}
-            provider={Platform.OS === "android" ? PROVIDER_GOOGLE : undefined}
-            style={{ flex: 1 }}
-            initialRegion={{
-              latitude: pickup.latitude,
-              longitude: pickup.longitude,
-              latitudeDelta: 0.05,
-              longitudeDelta: 0.05,
-            }}
-            customMapStyle={
-              Platform.OS === "android" ? greenMapStyle : undefined
-            }
-          >
-            <Marker
-              coordinate={{
-                latitude: pickup.latitude,
-                longitude: pickup.longitude,
-              }}
-              title="Pickup"
-              description={pickup.address}
-              pinColor="green"
-            />
+    <SafeAreaView className="flex-1 bg-white relative">
+      <View className="flex-1">
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ paddingBottom: 220 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* MAP DISPLAY */}
+          <View className="h-[350px]">
+            {pickup && dropoff ? (
+              <MapView
+                ref={mapRef}
+                provider={
+                  Platform.OS === "android" ? PROVIDER_GOOGLE : undefined
+                }
+                style={{ flex: 1 }}
+                initialRegion={{
+                  latitude: pickup.latitude,
+                  longitude: pickup.longitude,
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
+                }}
+                customMapStyle={
+                  Platform.OS === "android" ? greenMapStyle : undefined
+                }
+              >
+                <Marker
+                  coordinate={{
+                    latitude: pickup.latitude,
+                    longitude: pickup.longitude,
+                  }}
+                  title="Pickup"
+                  description={pickup.address}
+                  pinColor="green"
+                />
 
-            {/* Dropoff Marker */}
-            <Marker
-              coordinate={{
-                latitude: dropoff.latitude,
-                longitude: dropoff.longitude,
-              }}
-              title="Dropoff"
-              description={dropoff.address}
-              pinColor="red"
-            />
+                {/* Dropoff Marker */}
+                <Marker
+                  coordinate={{
+                    latitude: dropoff.latitude,
+                    longitude: dropoff.longitude,
+                  }}
+                  title="Dropoff"
+                  description={dropoff.address}
+                  pinColor="red"
+                />
 
-            {/* Route Polyline */}
-            {routeCoordinates.length > 0 && (
-              <Polyline
-                coordinates={routeCoordinates}
-                strokeWidth={5}
-                strokeColor="#208AEF"
-              />
+                {/* Route Polyline */}
+                {routeCoordinates.length > 0 && (
+                  <Polyline
+                    coordinates={routeCoordinates}
+                    strokeWidth={5}
+                    strokeColor="#208AEF"
+                  />
+                )}
+              </MapView>
+            ) : (
+              <View className="flex-1 justify-center items-center bg-gray-100">
+                <ActivityIndicator size="large" color="#A98516" />
+              </View>
             )}
-          </MapView>
-        ) : (
-          <View className="flex-1 justify-center items-center bg-gray-100">
-            <ActivityIndicator size="large" color="#A98516" />
           </View>
-        )}
-      </View>
 
-      <ScrollView className="px-5 py-2">
-        {/* PICKUP DISPLAY */}
-        <View className="h-20 bg-light-gray1 rounded-full flex-row justify-between items-center px-4">
-          <View className="flex-row items-center gap-2 flex-1">
-            <Iconify icon="weui:location-outlined" size={24} color="green" />
-            <View className="flex-1 pr-2">
+          <View className="px-5 py-2">
+            {/* PICKUP DISPLAY */}
+            <View className="h-20 bg-light-gray1 rounded-full flex-row justify-between items-center px-4 mt-3">
+              <View className="flex-row items-center gap-2 flex-1">
+                <Iconify
+                  icon="weui:location-outlined"
+                  size={24}
+                  color="green"
+                />
+                <View className="flex-1 pr-2">
+                  <Text
+                    className="text-sm"
+                    style={{ fontFamily: "Inter_600SemiBold" }}
+                    numberOfLines={1}
+                  >
+                    {pickup?.address || "Loading pickup..."}
+                  </Text>
+                  <Text
+                    className="text-xs text-light-black2"
+                    style={{ fontFamily: "Inter_600SemiBold" }}
+                    numberOfLines={1}
+                  >
+                    Pickup Location
+                  </Text>
+                </View>
+              </View>
+
               <Text
-                className="text-sm"
+                className="text-xs text-light-black2"
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
-                {pickup?.address || "Loading pickup..."}
-              </Text>
-              <Text
-                className="text-[9px] text-light-black2"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                Pickup Location
+                Pickup
               </Text>
             </View>
-          </View>
 
-          <Text
-            className="text-xs text-light-black2"
-            style={{ fontFamily: "Inter_600SemiBold" }}
-            numberOfLines={1}
-          >
-            Pickup
-          </Text>
-        </View>
+            {/* DROPOFF DISPLAY */}
+            <View className="h-20 bg-light-gray1 rounded-full flex-row justify-between items-center px-4 mt-5">
+              <View className="flex-row items-center gap-2 flex-1">
+                <Iconify icon="weui:location-outlined" size={24} color="red" />
+                <View className="flex-1 pr-2">
+                  <Text
+                    className="text-sm"
+                    style={{ fontFamily: "Inter_600SemiBold" }}
+                    numberOfLines={1}
+                  >
+                    {dropoff?.address || "Loading dropoff..."}
+                  </Text>
+                  <Text
+                    className="text-xs text-light-black2"
+                    style={{ fontFamily: "Inter_600SemiBold" }}
+                    numberOfLines={1}
+                  >
+                    {distanceKm
+                      ? `${distanceKm.toFixed(1)} km away`
+                      : "Dropoff Location"}
+                  </Text>
+                </View>
+              </View>
 
-        {/* DROPOFF DISPLAY */}
-        <View className="h-20 bg-light-gray1 rounded-full flex-row justify-between items-center px-4 mt-5">
-          <View className="flex-row items-center gap-2 flex-1">
-            <Iconify icon="weui:location-outlined" size={24} color="red" />
-            <View className="flex-1 pr-2">
               <Text
-                className="text-sm"
+                className="text-xs text-light-black2"
                 style={{ fontFamily: "Inter_600SemiBold" }}
                 numberOfLines={1}
               >
-                {dropoff?.address || "Loading dropoff..."}
-              </Text>
-              <Text
-                className="text-[9px] text-light-black2"
-                style={{ fontFamily: "Inter_600SemiBold" }}
-                numberOfLines={1}
-              >
-                {distanceKm
-                  ? `${distanceKm.toFixed(1)} km away`
-                  : "Dropoff Location"}
+                Dropoff
               </Text>
             </View>
-          </View>
 
-          <Text
-            className="text-xs text-light-black2"
-            style={{ fontFamily: "Inter_600SemiBold" }}
-            numberOfLines={1}
-          >
-            Dropoff
-          </Text>
-        </View>
-
-        {/* PRICE & PAYMENT SELECTION */}
-        <View className="min-h-40 bg-light-gray1 mt-5 mb-10 rounded-3xl px-4 py-3">
-          <View className="h-20 border rounded-3xl border-[#A1AC03] flex-row justify-between items-center px-3">
-            <View className="flex-row gap-2 items-center">
-              <Image
-                source={require("@/assets/images/scotter_no_bg.png")}
-                className="h-16 w-16"
-              />
-              <View>
+            {/* PRICE DISPLAY */}
+            <View className="bg-light-gray1 mt-5 rounded-3xl px-4 py-3">
+              <View className="h-20 border rounded-3xl border-[#A1AC03] flex-row justify-between items-center px-3">
+                <View className="flex-row gap-2 items-center">
+                  <Image
+                    source={require("@/assets/images/scotter_no_bg.png")}
+                    className="h-16 w-16"
+                  />
+                  <View>
+                    <Text
+                      className="text-xl"
+                      style={{ fontFamily: "Inter_600SemiBold" }}
+                      numberOfLines={1}
+                    >
+                      Motorcycle Ride
+                    </Text>
+                    <Text
+                      className="text-xs text-light-black2"
+                      style={{ fontFamily: "Inter_600SemiBold" }}
+                      numberOfLines={1}
+                    >
+                      {durationMin
+                        ? `${durationMin} min ride`
+                        : "Calculating..."}
+                    </Text>
+                  </View>
+                </View>
                 <Text
-                  className="text-xl"
+                  className="text-xs"
                   style={{ fontFamily: "Inter_600SemiBold" }}
                   numberOfLines={1}
                 >
-                  Motorcycle Ride
-                </Text>
-                <Text
-                  className="text-xs text-light-black2"
-                  style={{ fontFamily: "Inter_600SemiBold" }}
-                  numberOfLines={1}
-                >
-                  {durationMin ? `${durationMin} min ride` : "Calculating..."}
+                  GH₵ {calculatedPrice}
                 </Text>
               </View>
             </View>
-            <Text
-              className="text-xs"
-              style={{ fontFamily: "Inter_600SemiBold" }}
-              numberOfLines={1}
-            >
-              GH₵ {calculatedPrice}
-            </Text>
           </View>
+        </ScrollView>
 
+        {/* FLOATING ACTION BAR */}
+        <View className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-5 pt-3 pb-6 z-10">
           <Pressable
             onPress={() => setIsPickerVisible(true)}
-            className="bg-white rounded-2xl border border-gray-200 mt-4 px-4 py-3 flex-row justify-between items-center"
+            className="bg-white rounded-2xl border border-gray-200 px-4 py-3 flex-row justify-between items-center"
           >
             <Text
               className="text-sm text-black"
@@ -309,47 +329,12 @@ const CalculatePrice = () => {
             <Text className="text-xs text-black">▼</Text>
           </Pressable>
 
-          <Modal visible={isPickerVisible} transparent animationType="fade">
-            <Pressable
-              className="flex-1 bg-black/40 justify-center px-6"
-              onPress={() => setIsPickerVisible(false)}
-            >
-              <View className="bg-white rounded-2xl p-2 shadow-lg">
-                {PAYMENT_OPTIONS.map((item) => (
-                  <Pressable
-                    key={item.value}
-                    onPress={() => {
-                      setPaymentMethod(item.value);
-                      setIsPickerVisible(false);
-                    }}
-                    className="p-4 border-b border-gray-100 last:border-b-0 flex-row justify-between items-center"
-                  >
-                    <Text
-                      className="text-sm text-black"
-                      style={{ fontFamily: "Inter_600SemiBold" }}
-                    >
-                      {item.label}
-                    </Text>
-                    {paymentMethod === item.value && (
-                      <Text
-                        className="text-sm text-black"
-                        style={{ fontFamily: "Inter_600SemiBold" }}
-                      >
-                        ✓
-                      </Text>
-                    )}
-                  </Pressable>
-                ))}
-              </View>
-            </Pressable>
-          </Modal>
-
           <Button
             onPress={handleSubmit}
             radius={"xl"}
             buttonStyle={{
               backgroundColor: "black",
-              marginTop: 15,
+              marginTop: 12,
               height: UI.buttonHeight,
             }}
           >
@@ -362,7 +347,43 @@ const CalculatePrice = () => {
             </Text>
           </Button>
         </View>
-      </ScrollView>
+      </View>
+
+      {/* PAYMENT PICKER MODAL */}
+      <Modal visible={isPickerVisible} transparent animationType="fade">
+        <Pressable
+          className="flex-1 bg-black/40 justify-center px-6"
+          onPress={() => setIsPickerVisible(false)}
+        >
+          <View className="bg-white rounded-2xl p-2 shadow-lg">
+            {PAYMENT_OPTIONS.map((item) => (
+              <Pressable
+                key={item.value}
+                onPress={() => {
+                  setPaymentMethod(item.value);
+                  setIsPickerVisible(false);
+                }}
+                className="p-4 border-b border-gray-100 last:border-b-0 flex-row justify-between items-center"
+              >
+                <Text
+                  className="text-sm text-black"
+                  style={{ fontFamily: "Inter_600SemiBold" }}
+                >
+                  {item.label}
+                </Text>
+                {paymentMethod === item.value && (
+                  <Text
+                    className="text-sm text-black"
+                    style={{ fontFamily: "Inter_600SemiBold" }}
+                  >
+                    ✓
+                  </Text>
+                )}
+              </Pressable>
+            ))}
+          </View>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 };

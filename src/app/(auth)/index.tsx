@@ -11,7 +11,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   Text,
   View,
 } from "react-native";
@@ -153,27 +152,21 @@ const Login = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white relative overflow-hidden">
+      {/* Background shape placed first so it stays behind all content */}
+      <View className="h-44 w-44 rounded-3xl absolute -bottom-14 -left-10 bg-[#EDEDEA] z-0 -rotate-12" />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-        className="flex-1"
+        className="flex-1 z-10"
       >
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
-            padding: 20,
-            justifyContent: "space-between",
-          }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          automaticallyAdjustKeyboardInsets={true}
-        >
+        <View className="flex-1 justify-between p-5">
           <View>
-            <View className="h-16 px-2 bg-[#F1F1F1] rounded-3xl flex justify-between items-center flex-row">
+            <View className="h-16 px-1 bg-[#F1F1F1] rounded-3xl flex justify-between items-center flex-row">
               <Pressable
                 onPress={() => handleTabChange("email")}
-                className={`w-2/4 py-3 rounded-3xl ${
+                className={`w-2/4 flex items-center justify-center h-14 rounded-3xl ${
                   activeTab === "email" ? "bg-white" : "bg-transparent"
                 }`}
                 style={activeTab === "email" ? activeShadowStyle : {}}
@@ -190,7 +183,7 @@ const Login = () => {
 
               <Pressable
                 onPress={() => handleTabChange("phone")}
-                className={`w-2/4 py-3 rounded-3xl ${
+                className={`w-2/4 flex items-center justify-center h-14 rounded-3xl ${
                   activeTab === "phone" ? "bg-white" : "bg-transparent"
                 }`}
                 style={activeTab === "phone" ? activeShadowStyle : {}}
@@ -350,31 +343,30 @@ const Login = () => {
             </View>
           </View>
 
-          <View className="relative mt-12 pb-4">
-            <View className="flex-row gap-3 justify-center items-center z-10 relative">
+          {/* Footer containing policies */}
+          <View className="relative pb-2 z-20">
+            <View className="flex-row gap-3 justify-center items-center">
               <Text
-                style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
-                className="text-[#4A4946]"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                className="text-xs text-[#4A4946]"
               >
                 policies
               </Text>
               <Text
-                style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
-                className="text-[#4A4946]"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                className="text-xs text-[#4A4946]"
               >
                 Supports
               </Text>
               <Text
-                style={{ fontFamily: "Inter_600SemiBold", fontSize: 10 }}
-                className="text-[#4A4946]"
+                style={{ fontFamily: "Inter_600SemiBold" }}
+                className="text-xs text-[#4A4946]"
               >
                 Help center
               </Text>
             </View>
-
-            <View className="w-44 h-44 bg-[#EDEDEA] rounded-3xl absolute -bottom-24 -left-10 -rotate-12 z-0" />
           </View>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
